@@ -1,0 +1,91 @@
+/* Headings & text */
+h1, h2, h3 { line-height: 1.2; margin: 0 0 12px; } /* Top | left and right | bottom */
+
+/* Layout helpers */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; } /* auto = center (horizontally) in this context */
+.section { padding: 56px 0; }
+
+.grid { display: grid; gap: 16px; }
+.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* 3) Components */
+
+/* Card */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin: 10px 0px;
+}
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 8px; text-align: left; border: 1px solid var(--border); }
+caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* 5) Responsive tweaks */
+@media (max-width: 800px) {
+  .grid-2,
+  .grid-3 { grid-template-columns: 1fr; }
+}
+
+.group-photo {
+  display: block;
+  margin: 0 auto;
+  max-width: 700px;   /* adjust width as you like */
+  height: auto;
+  border-radius: 12px; /* optional: round corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+/* ---- Group Photo Section ---- */
+.group-photo-card {
+  text-align: center;
+}
+
+.group-photo-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px; /* adjust per your design */
+}
+
+.member img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease;
+}
+
+.member img:hover {
+  transform: scale(1.05);
+}
+
+.member figcaption {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.team-caption {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-top: 10px;
+}
