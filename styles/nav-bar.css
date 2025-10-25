@@ -1,0 +1,41 @@
+#nav-bar-logo { max-width: 100%; height: auto; }
+.site-header .header-inner a { color: var(--brand); }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+/* Header & nav */
+.site-header {
+  position: sticky;   /* ??? */
+  top: 0px;
+  z-index: 10;
+  background: rgba(11, 12, 16, 0.9);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+}
+
+.nav {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  background: var(--panel);
+}

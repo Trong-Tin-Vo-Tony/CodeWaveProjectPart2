@@ -1,0 +1,129 @@
+/* Container box */
+.main_container {
+  border: 2px solid var(--border);
+  background: var(--panel);
+  padding: 30px;
+  margin: 30px auto;
+  border-radius: 10px;
+  max-width: 900px;
+}
+
+/* Individual form field styling */
+.field {
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+}
+
+/* Headings */
+h1, h2, legend {
+  color: var(--accent);
+}
+
+/* Text, inputs, and labels */
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+/* Form styling improvements */
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Checkbox and radio alignment */
+input[type="checkbox"], input[type="radio"] {
+  width: auto;
+  margin-right: 8px;
+  accent-color: var(--brand);
+}
+
+/* Button styling */
+button.apply-btn {
+  background: var(--brand);
+  color: var(--text);
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+button.apply-btn:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+/* Placeholder color */
+::placeholder {
+  color: var(--muted);
+}
+
+/* New adjustments according to the feedback */
+form input[type="text"],
+form input[type="email"],
+form input[type="tel"],
+form select,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  }
+
+label, legend {
+  font-weight: bold;
+  color: var(--accent);
+  }
+
+button.apply-btn {
+  background-color: var(--brand);
+  color: var(--text);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  }
+
+button.apply-btn:hover {
+  background-color: var(--accent);
+  color: #000;
+  }
+
+fieldset.field {
+  border: 1px solid var(--border);
+  padding: 20px;
+  border-radius: 8px;
+  background: var(--card);
+  }
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--brand);
+  }
+
+.field {
+  margin-bottom: 20px;
+  }

@@ -1,0 +1,41 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0c10;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.thankyou-container {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 500px;
+}
+
+h1 {
+  color: #00ffff;
+  margin-bottom: 20px;
+}
+
+p {
+  margin: 35px 0;
+}
+
+.home-btn {
+  margin: 20px;
+  padding: 10px 20px;
+  background: #00ffff;
+  color: #000;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+.home-btn:hover {
+  background: #00cccc;
+}
