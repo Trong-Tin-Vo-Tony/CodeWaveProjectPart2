@@ -8,6 +8,7 @@
         <li><a class="active" href="home.php">Home</a></li>
         <li><a href="jobs.php">Jobs</a></li>
         <li><a href="about.php">About</a></li>
+        <li><a href="login.php">Manager Login</a></li>
     </ul>
     </nav>
 </div>
