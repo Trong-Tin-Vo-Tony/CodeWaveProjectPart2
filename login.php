@@ -7,8 +7,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $username = trim($_POST["username"]);
   $password = $_POST["password"];
 
-  $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
-  if (!$conn) die("Connection failed.");
+  $conn = @mysqli_connect($host2, $user, $pwd, $sql_db, $port2);
+  if (!$conn) {
+    $conn = @mysqli_connect($host, $user, $pwd, $sql_db, $port);
+    if (!$conn) {
+      die("Connection failed.");
+    }
+  }
 
   $stmt = $conn->prepare("SELECT user_id, username, password_hash FROM user WHERE username = ?");
   $stmt->bind_param("s", $username);
