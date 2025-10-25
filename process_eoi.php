@@ -1,74 +1,103 @@
 <?php
 session_start();
-// Include database settings
-require_once('settings.php');
-// Include common UI elements
-require_once('header.inc');
-require_once('nav.inc');
 
-// --- 1. BLOCK DIRECT ACCESS ---
-// Check if the request method is POST and if a required field is set.
+// --- 1. ACCESS CONTROL ---
+// Redirect if accessed directly (must be a POST request and have the 'ref' field)
 if ($_SERVER["REQUEST_METHOD"] != "POST" || !isset($_POST['ref'])) {
     header("Location: apply.php");
     exit();
 }
 
-// --- 2. CONNECT TO DATABASE ---
-$conn = @mysqli_connect($host, $user, $pwd, $sql_db);
+require_once('settings.php'); // Contains $host, $user, $pwd, $sql_db
 
-if (!$conn) {
-    // Show a general error, do not expose internal details like mysqli_connect_error()
-    die("<p>Database connection failure. Please try again later.</p>");
-}
-
-// --- 3. SERVER-SIDE VALIDATION & SANITISING ---
+// Store all POST data for sticky form (in case of failure)
+$formData = $_POST;
 $errors = [];
 
-// Get and sanitize all inputs
-$jobRef = mysqli_real_escape_string($conn, trim($_POST['ref']));
-$firstName = mysqli_real_escape_string($conn, trim($_POST['firstName']));
-$lastName = mysqli_real_escape_string($conn, trim($_POST['lastName']));
-$street = mysqli_real_escape_string($conn, trim($_POST['street']));
-$suburb = mysqli_real_escape_string($conn, trim($_POST['suburb']));
-$state = mysqli_real_escape_string($conn, trim($_POST['state']));
-$postcode = mysqli_real_escape_string($conn, trim($_POST['postcode']));
-$email = mysqli_real_escape_string($conn, trim($_POST['email']));
-$phone = mysqli_real_escape_string($conn, trim($_POST['phone']));
-// Handle skills array to string conversion
+// --- 2. DATABASE CONNECTION ---
+// The connection details are in settings.php
+$conn = mysqli_connect($host, $user, $pwd, $sql_db);
+if (!$conn) {
+    // For production, you wouldn't die() but log the error and redirect.
+    die("<h1>Database Connection Failure</h1><p>Connection failed: " . mysqli_connect_error() . "</p>");
+}
+
+// --- 3. INPUT RETRIEVAL, SANITIZATION, AND VALIDATION ---
+
+// Retrieve and sanitize all inputs by trimming whitespace
+$jobRef = trim($_POST['ref']);
+$firstName = trim($_POST['firstName']);
+$lastName = trim($_POST['lastName']);
+$street = trim($_POST['street']);
+$suburb = trim($_POST['suburb']);
+$state = trim($_POST['state']);
+$postcode = trim($_POST['postcode']);
+$email = trim($_POST['email']);
+$phone = trim($_POST['phone']);
+// Skills needs special handling as it comes as an array
 $skillsArray = isset($_POST['skills']) ? $_POST['skills'] : [];
-$skills = mysqli_real_escape_string($conn, implode(", ", $skillsArray));
-$otherSkills = mysqli_real_escape_string($conn, trim($_POST['otherSkills']));
-
-// Replicate and strengthen the validation rules from apply.php
-if (!preg_match("/^[A-Za-z0-9]{5}$/", $jobRef)) $errors[] = "Job reference must be 5 alphanumeric characters.";
-if (!preg_match("/^[A-Za-z\s\-]{1,20}$/", $firstName)) $errors[] = "First name invalid (max 20 chars, letters/spaces/hyphens only)."; // Added spaces/hyphens for real names
-if (!preg_match("/^[A-Za-z\s\-]{1,20}$/", $lastName)) $errors[] = "Last name invalid (max 20 chars, letters/spaces/hyphens only).";
-if (empty($street) || strlen($street) > 40) $errors[] = "Street address is required and must be max 40 characters.";
-if (empty($suburb) || strlen($suburb) > 40) $errors[] = "Suburb/Town is required and must be max 40 characters.";
-if (!in_array($state, ['VIC', 'NSW', 'QLD', 'NT', 'WA', 'SA', 'TAS', 'ACT'])) $errors[] = "Invalid state selected.";
-if (!preg_match("/^[0-9]{4}$/", $postcode)) $errors[] = "Postcode must be 4 digits.";
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Invalid email format.";
-if (!preg_match("/^[0-9]{8,12}$/", $phone)) $errors[] = "Phone number must be 8–12 digits.";
-if (empty($skills) && empty($otherSkills)) $errors[] = "You must select at least one skill or describe other skills.";
+$skills = implode(", ", $skillsArray); // Store as comma-separated string
+$otherSkills = trim($_POST['otherSkills']);
 
 
-// If validation fails, redirect back to apply.php
+// --- VALIDATION CHECKS (Based on required project rules) ---
+if (!preg_match("/^[A-Za-z0-9]{5}$/", $jobRef)) {
+    $errors[] = "Job reference must be exactly 5 letters and/or numbers.";
+}
+
+if (empty($firstName) || !preg_match("/^[A-Za-z]{1,20}$/", $firstName)) {
+    $errors[] = "First name must contain 1-20 letters only.";
+}
+
+if (empty($lastName) || !preg_match("/^[A-Za-z]{1,20}$/", $lastName)) {
+    $errors[] = "Last name must contain 1-20 letters only.";
+}
+
+if (empty($street) || strlen($street) > 40) {
+    $errors[] = "Street address is required and cannot exceed 40 characters.";
+}
+
+if (empty($suburb) || strlen($suburb) > 40) {
+    $errors[] = "Suburb/Town is required and cannot exceed 40 characters.";
+}
+
+$valid_states = ['VIC', 'NSW', 'QLD', 'NT', 'WA', 'SA', 'TAS', 'ACT'];
+if (empty($state) || !in_array($state, $valid_states)) {
+    $errors[] = "Please select a valid State from the list.";
+}
+
+if (!preg_match("/^[0-9]{4}$/", $postcode)) {
+    $errors[] = "Postcode must be exactly 4 digits.";
+}
+
+if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors[] = "A valid email address is required.";
+}
+
+if (!preg_match("/^[0-9]{8,12}$/", $phone)) {
+    $errors[] = "Phone number must be 8–12 digits only.";
+}
+
+if ($otherSkills != "" && strlen($otherSkills) > 500) {
+    $errors[] = "Other skills/comments cannot exceed 500 characters.";
+}
+
+
+// --- 4. HANDLE VALIDATION FAILURE ---
 if (count($errors) > 0) {
-    // Store errors in session to display them on apply.php
     $_SESSION['eoi_errors'] = $errors;
-    // Optionally store form data to repopulate fields
-    $_SESSION['form_data'] = $_POST;
+    $_SESSION['form_data'] = $formData; // Store all data for sticky form
     mysqli_close($conn);
     header("Location: apply.php");
     exit();
 }
 
-// --- 4. CREATE EOI TABLE (if it does not exist) ---
-$tableName = "eoi";
 
-// SQL to create the table based on the implied structure, adding EOInumber and status
-$createTableQuery = "
-    CREATE TABLE IF NOT EXISTS $tableName (
+// --- 5. DATABASE SETUP AND SECURE INSERTION ---
+
+// A. Create table if not exists (Ensures self-healing setup for the marker)
+$create_table_sql = "
+    CREATE TABLE IF NOT EXISTS eoi (
         EOInumber INT AUTO_INCREMENT PRIMARY KEY,
         jobRef CHAR(5) NOT NULL,
         firstName VARCHAR(20) NOT NULL,
@@ -79,62 +108,72 @@ $createTableQuery = "
         postcode CHAR(4) NOT NULL,
         email VARCHAR(100) NOT NULL,
         phone VARCHAR(12) NOT NULL,
-        skills TEXT NOT NULL,
+        skills VARCHAR(255),
         otherComments TEXT,
+        dateApplied TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         status ENUM('New', 'Current', 'Final') DEFAULT 'New'
-    );
+    )
 ";
-
-if (!mysqli_query($conn, $createTableQuery)) {
-    die("Error creating table: " . mysqli_error($conn));
+if (!mysqli_query($conn, $create_table_sql)) {
+    // If table creation fails, store error and redirect.
+    $errors[] = "Database table creation failed: " . mysqli_error($conn);
+    $_SESSION['eoi_errors'] = $errors;
+    $_SESSION['form_data'] = $formData;
+    mysqli_close($conn);
+    header("Location: apply.php");
+    exit();
 }
 
-// --- 5. INSERT RECORD using Prepared Statement (Security) ---
-// Prepared statements prevent SQL injection.
-$sql = "INSERT INTO $tableName (
-    jobRef, firstName, lastName, streetAddress, suburbTown, state, postcode, email, phone, skills, otherComments
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+// B. Secure Insertion using Prepared Statements
+$sql = "INSERT INTO eoi (jobRef, firstName, lastName, streetAddress, suburbTown, state, postcode, email, phone, skills, otherComments)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = mysqli_prepare($conn, $sql);
 
-// Bind parameters: 's' for string ( used 's' for everything here)
-mysqli_stmt_bind_param(
-    $stmt, "sssssssssss",
-    $jobRef, $firstName, $lastName, $street, $suburb, $state, $postcode, $email, $phone, $skills, $otherSkills
-);
-
-$success = mysqli_stmt_execute($stmt);
-$EOInumber = false;
-
-if ($success) {
-    // Get the auto-generated EOInumber
-    $EOInumber = mysqli_insert_id($conn);
-} else {
-    // Handle insertion error
-    die("<p>Error submitting EOI: " . mysqli_error($conn) . "</p>");
+// Check if the statement prepared correctly
+if ($stmt === false) {
+    $errors[] = "SQL Prepare failed: " . mysqli_error($conn);
+    $_SESSION['eoi_errors'] = $errors;
+    $_SESSION['form_data'] = $formData;
+    mysqli_close($conn);
+    header("Location: apply.php");
+    exit();
 }
 
-mysqli_stmt_close($stmt);
-mysqli_close($conn);
-?>
-<main class="main_container">
-    <h2>Application Confirmation</h2>
-    <?php if ($EOInumber): ?>
-        <section class="confirmation">
-            <p>✅ **Success!** Your Expression of Interest has been successfully submitted.</p>
-            <p>Your unique **EOI Number** is: <strong class="eoi-number"><?php echo $EOInumber; ?></strong></p>
-            <p>We recommend you save this number for future reference.</p>
-            <p><a href="jobs.php" class="back-link">View other jobs</a> | <a href="index.php" class="back-link">Return to Home Page</a></p>
-        </section>
-    <?php else: ?>
-        <section class="error-message">
-            <p>❌ **Error:** Could not process your application. Please check your form submission and try again.</p>
-            <p><a href="apply.php" class="back-link">Go back to the application form</a></p>
-        </section>
-    <?php endif; ?>
-</main>
-<?php
-require_once('footer.inc');
-// Ensure no further HTML output
-exit();
+// Bind parameters: 'sssssssssss' means all 11 fields are treated as strings
+mysqli_stmt_bind_param($stmt, "sssssssssss", $jobRef, $firstName, $lastName, $street, $suburb, $state, $postcode, $email, $phone, $skills, $otherSkills);
+
+
+// --- 6. EXECUTE AND HANDLE REDIRECTION (WITH EOI NUMBER CAPTURE) ---
+if (mysqli_stmt_execute($stmt)) {
+    
+    // CAPTURE THE UNIQUE EOI NUMBER
+    // mysqli_insert_id() retrieves the auto-generated Primary Key (EOInumber)
+    $eoi_id = mysqli_insert_id($conn);
+
+    // PREPARE AND STORE THE CONFIRMATION MESSAGE FOR thankyou.php
+    $eoi_render_info = "<p>Your unique EOI number is: <strong>$eoi_id</strong></p>";
+    
+    // Store the message in the session variable for thankyou.php to pick up
+    $_SESSION['eoi-render-info'] = $eoi_render_info;
+
+    // CLEAN UP AND REDIRECT
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+
+    header("Location: thankyou.php");
+    exit();
+
+} else {
+    // EXECUTION FAILURE (e.g., database locked, transient issue)
+    $errors[] = "Database insertion failed: " . mysqli_error($conn);
+    
+    // Store errors and redirect back to apply.php
+    $_SESSION['eoi_errors'] = $errors;
+    $_SESSION['form_data'] = $formData;
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+    header("Location: apply.php");
+    exit();
+}
 ?>
