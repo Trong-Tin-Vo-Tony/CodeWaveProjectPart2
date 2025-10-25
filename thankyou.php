@@ -1,3 +1,23 @@
+<?php
+session_start();
+
+
+if (isset($_SESSION['eoi-render-info'])) {
+    
+   
+    $eoi_render_info = $_SESSION['eoi-render-info'];
+    
+
+    unset($_SESSION['eoi-render-info']);
+    
+} else {
+    
+    header("Location: apply.php");
+    exit();
+}
+
+session_write_close();
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,23 +31,17 @@
   <body class="page-thankyou">
     <main class="page-wrapper">
       <div class="thankyou-container">
+        
         <h1>🎉 Thank You!</h1>
         <p>Your application has been successfully submitted. Our cybersecurity recruitment team will review it and get back to you soon.</p>
-        <a href="home.php" class="home-btn">Return to Home</a>
+        
+        <?php echo $eoi_render_info; ?>
+
+        <a href="home.html" class="home-btn">Return to Home</a>
+
       </div>
     </main>
 
-    <?php 
-      session_start();
-      if ($_SESSION['eoi-render-info'] != null) {
-        echo($_SESSION['eoi-render-info']);
-      }
-      else{
-        echo("Crappppppppp");
-      }
-      session_abort();
-    ?>
-
-    <?php include 'footer.inc'; ?>
+    <?php  ?>
   </body>
 </html>
