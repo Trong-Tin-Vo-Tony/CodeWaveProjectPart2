@@ -37,7 +37,7 @@ session_write_close();
         
         <?php echo $eoi_render_info; ?>
 
-        <a href="home.html" class="home-btn">Return to Home</a>
+        <a href="home.php" class="home-btn">Return to Home</a>
 
       </div>
     </main>
