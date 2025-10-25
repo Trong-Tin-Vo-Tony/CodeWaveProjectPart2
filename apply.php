@@ -8,7 +8,6 @@ $formData = isset($_SESSION['form_data']) ? $_SESSION['form_data'] : [];
 unset($_SESSION['eoi_errors']);
 unset($_SESSION['form_data']);
 
-
 function sticky($field, $formData) {
     if (isset($formData[$field])) {
         
@@ -17,15 +16,12 @@ function sticky($field, $formData) {
     return '';
 }
 
-
 function checked($field, $value, $formData) {
-    
     if ($field == 'skills' && isset($formData[$field]) && in_array($value, $formData[$field])) {
         return 'checked';
     }
     return '';
 }
-
 
 function selected($field, $value, $formData) {
     if (isset($formData[$field]) && $formData[$field] == $value) {
@@ -33,8 +29,6 @@ function selected($field, $value, $formData) {
     }
     return '';
 }
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,15 +39,11 @@ function selected($field, $value, $formData) {
   <link rel="icon" href="images/logo.svg" type="image/svg+xml" />
 
   <link rel="stylesheet" href="styles/styles.css"/>
-  <!-- <link rel="stylesheet" href="styles/apply.css"/> -->
-  <!-- <link rel="stylesheet" href="styles/styles.css"/> -->
-
 </head>
 
 <body class="page-apply">
 <?php require_once('header.inc'); ?>
-
-<main class="main_container">
+<?php require_once('nav.inc'); ?> <main class="main_container">
     <header>
       <h1>Apply for a Job</h1>
       <p>Please complete all required fields. Data validation is performed on the server.</p>
@@ -70,7 +60,7 @@ function selected($field, $value, $formData) {
         </div>
     <?php endif; ?>
 
-    <form class="app-form" method="post" action="process_eoi.php" autocomplete="on" onsubmit="return false;">
+    <form class="app-form" method="post" action="process_eoi.php" autocomplete="on">
       <div class="field">
         <label for="ref">Job reference number</label>
         <input id="ref" name="ref" type="text" <?php echo sticky('ref', $formData); ?> />
@@ -143,11 +133,10 @@ function selected($field, $value, $formData) {
         </textarea>
       </div>
 
-      <button type="submit" class="apply-btn" onclick="window.location.href='thankyou.php';">Submit Application</button>
+      <button type="submit" class="apply-btn">Submit Application</button>
     </form>
 
 
-</main>
 </main>
 
 <?php require_once('footer.inc'); ?>
