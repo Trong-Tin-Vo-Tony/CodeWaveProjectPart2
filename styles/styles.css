@@ -1,13 +1,13 @@
 /* ======================================
-    CodeWave – Combined Stylesheet
+    CodeWave – Combined Stylesheet (Full)
     ======================================
 
-    This file combines:
+    Combines:
     1. base.css (Global)
     2. nav-bar.css (Global)
     3. Shared utilities from home.css & about.css (Global)
     4. Page-specific styles (Scoped)
-    
+    5. Jobs enhancements (merged)
 */
 
 /* 1) Design tokens 
@@ -143,12 +143,9 @@ caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
     ======================================
 */
 
-/* Page: Home (home.html)
-    Requires: <body class="page-home">
-*/
+/* Page: Home (home.html) */
 .page-home .lead { color: var(--muted); }
 
-/* Hero */
 .page-home .hero {
   padding: 48px 0;
   border-bottom: 1px solid var(--border);
@@ -160,52 +157,106 @@ caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
 .page-home .hero-logo { display: block; margin-bottom: 8px; }
 .page-home .slogan { font-style: italic; color: var(--accent); }
 
-/* Page: About (about.html)
-    Requires: <body class="page-about">
-*/
-
-/* Card margin override */
+/* Page: About (about.html) */
 .page-about .card {
   margin: 10px 0px;
 }
 
-/* Page: Jobs (Jobs.html)
-    Requires: <body class="page-jobs">
-*/
-
-/* Hero/banner image */
+/* Page: Jobs (jobs.html) */
 .page-jobs .image {
   width: 100%;
   height: 400px;
+  object-fit: cover;
+  border-bottom: 2px solid var(--border);
 }
 
-/* Apply button container and alignment */
+/* Apply button container */
 .page-jobs .btn-container {
   text-align: center;
-  margin: 20px 0;
+  margin: 40px 0;
 }
 
-/* Apply button default style */
+/* Apply button */
 .page-jobs .apply-btn {
   display: inline-block;
-  background-color: red;
-  color: white;
-  padding: 12px 24px;
+  background-color: var(--brand);
+  color: var(--text);
+  padding: 12px 28px;
   text-decoration: none;
   border-radius: 6px;
-  font-size: 16px;
+  font-size: 17px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(106, 167, 255, 0.4);
+}
+
+.page-jobs .apply-btn:hover {
+  background-color: var(--accent);
+  color: #000;
+}
+
+/* Job cards */
+.page-jobs .job {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 30px 0;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+}
+
+.page-jobs .job h3 {
+  color: var(--accent);
+  margin-bottom: 5px;
+}
+
+.page-jobs .job h4 {
+  margin-top: 15px;
+  color: var(--brand);
+}
+
+.page-jobs .salary {
+  color: var(--accent);
   font-weight: bold;
 }
 
-/* Apply button hover effect */
-.page-jobs .apply-btn:hover {
-  background-color: darkred;
+.page-jobs .ref {
+  color: var(--muted);
+  font-style: italic;
 }
 
-/* Page: Job application (apply.html)
-    Requires: <body class="page-apply">
-*/
-/* Container box */
+/* Requirements container */
+.page-jobs aside {
+  background: var(--panel);
+  border-left: 4px solid var(--brand);
+  padding: 15px 20px;
+  margin-top: 15px;
+  border-radius: 4px;
+}
+
+.page-jobs aside h4 {
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.page-jobs ol {
+  margin-left: 25px;
+  color: var(--text);
+}
+
+/* Headings and content alignment */
+.page-jobs main h1,
+.page-jobs main h2,
+.page-jobs main h3 {
+  color: var(--text);
+}
+
+.page-jobs p,
+.page-jobs li {
+  color: var(--text);
+}
+
+/* Page: Job Application (apply.html) */
 .page-apply .main_container {
   border: 2px solid var(--border);
   background: var(--panel);
@@ -215,7 +266,6 @@ caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
   max-width: 900px;
 }
 
-/* Individual form field styling */
 .page-apply .field {
   border: 1px solid var(--border);
   background: var(--card);
@@ -224,19 +274,17 @@ caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
   border-radius: 8px;
 }
 
-/* Headings */
 .page-apply h1, h2, legend {
   color: var(--accent);
 }
 
-/* Text, inputs, and labels */
 .page-apply label {
   display: block;
   margin-bottom: 8px;
   color: var(--text);
 }
 
-/* Form styling improvements */
+/* Inputs and forms */
 .page-apply input, select, textarea {
   width: 100%;
   padding: 10px;
@@ -252,8 +300,8 @@ caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
   border-color: var(--accent);
 }
 
-/* Checkbox and radio alignment */
-.page-apply input[type="checkbox"], input[type="radio"] {
+.page-apply input[type="checkbox"],
+.page-apply input[type="radio"] {
   width: auto;
   margin-right: 8px;
   accent-color: var(--brand);
@@ -277,9 +325,12 @@ caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
   color: #000;
 }
 
-/* New adjustments according to the feedback */
-.page-apply form input[type="text"], form input[type="email"], 
-form input[type="tel"], form select, form textarea {
+/* Form adjustments */
+.page-apply form input[type="text"], 
+.page-apply form input[type="email"], 
+.page-apply form input[type="tel"], 
+.page-apply form select, 
+.page-apply form textarea {
   width: 100%;
   padding: 10px;
   margin-top: 6px;
@@ -294,18 +345,6 @@ form input[type="tel"], form select, form textarea {
   color: var(--accent);
 }
 
-.page-apply button.apply-btn {
-  background-color: var(--brand);
-  color: var(--text);
-  border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  transition: all 0.3s ease;
-}
-
 .page-apply fieldset.field {
   border: 1px solid var(--border);
   padding: 20px;
@@ -313,19 +352,11 @@ form input[type="tel"], form select, form textarea {
   background: var(--card);
 }
 
-.page-apply input[type="checkbox"], input[type="radio"] {
-  accent-color: var(--brand);
-}
-
 .page-apply .field {
   margin-bottom: 20px;
 }
 
-/* Page: Thank You (Thank_you.html)
-    Requires: <body class="page-thankyou">
-*/
-
-/* Body overrides for centering */
+/* Page: Thank You (thank_you.html) */
 body.page-thankyou {
   font-family: Arial, sans-serif;
   background: #0b0c10;
