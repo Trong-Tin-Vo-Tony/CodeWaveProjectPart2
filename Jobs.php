@@ -3,6 +3,15 @@
 require_once "settings.php"; 
 $conn = mysqli_connect($host, $user, $pwd, $sql_db);
 
+$conn = @mysqli_connect($host2, $user, $pwd, $sql_db, $port2);
+if (!$conn) {
+    $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
+    if (!$conn) {
+        // Show a general error, do not expose internal details like mysqli_connect_error()
+        die("<p>Database connection failure. Please try again later.</p>");
+    }
+}
+
 // if connection fails
 if (!$conn) {
   die("<p>Database connection failed: " . mysqli_connect_error() . "</p>");
