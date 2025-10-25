@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360" role="img" aria-labelledby="teamtitle">
+<title id="teamtitle">Group Photo Placeholder — 5 members</title>
+<rect width="900" height="360" fill="#161922"/>
+<g fill="#6aa7ff">
+  <g transform="translate(100,120)"><circle cx="0" cy="0" r="36"/><rect x="-36" y="40" width="72" height="80" rx="10"/></g>
+  <g transform="translate(280,120)"><circle cx="0" cy="0" r="36"/><rect x="-36" y="40" width="72" height="80" rx="10"/></g>
+  <g transform="translate(460,120)"><circle cx="0" cy="0" r="36"/><rect x="-36" y="40" width="72" height="80" rx="10"/></g>
+  <g transform="translate(640,120)"><circle cx="0" cy="0" r="36"/><rect x="-36" y="40" width="72" height="80" rx="10"/></g>
+  <g transform="translate(820,120)"><circle cx="0" cy="0" r="36"/><rect x="-36" y="40" width="72" height="80" rx="10"/></g>
+</g>
+<text x="450" y="335" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="18" fill="#9bffdc">Team CodeWave — 5 members</text>
+</svg>

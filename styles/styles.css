@@ -1,0 +1,368 @@
+/* ======================================
+    CodeWave – Combined Stylesheet
+    ======================================
+
+    This file combines:
+    1. base.css (Global)
+    2. nav-bar.css (Global)
+    3. Shared utilities from home.css & about.css (Global)
+    4. Page-specific styles (Scoped)
+    
+*/
+
+/* 1) Design tokens 
+    (from base.css)
+*/
+:root {
+  --bg: #0b0c10;
+  --panel: #121419;
+  --text: #eef2f8;
+  --muted: #9aa4b7;
+  --card: #161922;
+  --border: #2a3040;
+  --brand: hsl(215, 100%, 71%);
+  --accent: #9bffdc;
+}
+
+/* 2) Resets & base elements 
+    (from base.css, home.css)
+*/
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+img { max-width: 100%; height: auto; }
+a { color: var(--brand); }
+h1, h2, h3 { line-height: 1.2; margin: 0 0 12px; }
+
+/* 3) Global Components (Header/Footer)
+    (from base.css, nav-bar.css)
+*/
+
+/* Header & nav */
+.site-header {
+  position: sticky;
+  top: 0px;
+  z-index: 10;
+  background: rgba(11, 12, 16, 0.9);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+}
+
+.site-header .header-inner a { color: var(--brand); }
+#nav-bar-logo { max-width: 100%; height: auto; }
+
+.nav {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  background: var(--panel);
+}
+
+/* Footer */
+.site-footer {
+  background: #0a0b0f;
+  border-top: 1px solid var(--border);
+}
+
+.footer-inner {
+  padding: 18px;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* 4) Global Layout & Utilities
+    (from about.css, home.css, nav-bar.css)
+*/
+
+/* Layout helpers */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.section { padding: 56px 0; }
+
+.grid { display: grid; gap: 16px; }
+.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* Card (Base style) */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 8px; text-align: left; border: 1px solid var(--border); }
+caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
+
+/* 5) Global Media Queries 
+    (from about.css)
+*/
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* Responsive tweaks */
+@media (max-width: 800px) {
+  .grid-2,
+  .grid-3 { grid-template-columns: 1fr; }
+}
+
+
+/* ======================================
+    PAGE-SPECIFIC STYLES
+    ======================================
+*/
+
+/* Page: Home (home.html)
+    Requires: <body class="page-home">
+*/
+.page-home .lead { color: var(--muted); }
+
+/* Hero */
+.page-home .hero {
+  padding: 48px 0;
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(900px 300px at 100% 0%, #112235, transparent),
+    radial-gradient(1000px 400px at 10% -10%, #1a2132, transparent);
+}
+
+.page-home .hero-logo { display: block; margin-bottom: 8px; }
+.page-home .slogan { font-style: italic; color: var(--accent); }
+
+/* Page: About (about.html)
+    Requires: <body class="page-about">
+*/
+
+/* Card margin override */
+.page-about .card {
+  margin: 10px 0px;
+}
+
+/* Page: Jobs (Jobs.html)
+    Requires: <body class="page-jobs">
+*/
+
+/* Hero/banner image */
+.page-jobs .image {
+  width: 100%;
+  height: 400px;
+}
+
+/* Apply button container and alignment */
+.page-jobs .btn-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* Apply button default style */
+.page-jobs .apply-btn {
+  display: inline-block;
+  background-color: red;
+  color: white;
+  padding: 12px 24px;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Apply button hover effect */
+.page-jobs .apply-btn:hover {
+  background-color: darkred;
+}
+
+/* Page: Job application (apply.html)
+    Requires: <body class="page-apply">
+*/
+/* Container box */
+.page-apply .main_container {
+  border: 2px solid var(--border);
+  background: var(--panel);
+  padding: 30px;
+  margin: 30px auto;
+  border-radius: 10px;
+  max-width: 900px;
+}
+
+/* Individual form field styling */
+.page-apply .field {
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+}
+
+/* Headings */
+.page-apply h1, h2, legend {
+  color: var(--accent);
+}
+
+/* Text, inputs, and labels */
+.page-apply label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+/* Form styling improvements */
+.page-apply input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.page-apply input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Checkbox and radio alignment */
+.page-apply input[type="checkbox"], input[type="radio"] {
+  width: auto;
+  margin-right: 8px;
+  accent-color: var(--brand);
+}
+
+/* Button styling */
+.page-apply button.apply-btn {
+  background: var(--brand);
+  color: var(--text);
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.page-apply button.apply-btn:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+/* New adjustments according to the feedback */
+.page-apply form input[type="text"], form input[type="email"], 
+form input[type="tel"], form select, form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+}
+
+.page-apply label, legend {
+  font-weight: bold;
+  color: var(--accent);
+}
+
+.page-apply button.apply-btn {
+  background-color: var(--brand);
+  color: var(--text);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.page-apply fieldset.field {
+  border: 1px solid var(--border);
+  padding: 20px;
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.page-apply input[type="checkbox"], input[type="radio"] {
+  accent-color: var(--brand);
+}
+
+.page-apply .field {
+  margin-bottom: 20px;
+}
+
+/* Page: Thank You (Thank_you.html)
+    Requires: <body class="page-thankyou">
+*/
+
+/* Body overrides for centering */
+body.page-thankyou {
+  font-family: Arial, sans-serif;
+  background: #0b0c10;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.page-thankyou .thankyou-container {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 500px;
+}
+
+.page-thankyou h1 {
+  color: #00ffff;
+  margin-bottom: 20px;
+}
+
+.page-thankyou p {
+  margin: 35px 0;
+}
+
+.page-thankyou .home-btn {
+  margin: 20px;
+  padding: 10px 20px;
+  background: #00ffff;
+  color: #000;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+.page-thankyou .home-btn:hover {
+  background: #00cccc;
+}
