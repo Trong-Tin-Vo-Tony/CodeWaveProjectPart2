@@ -8,6 +8,7 @@
           <li><a href="home.html">Home</a></li>
           <li><a href="jobs.php">Jobs</a></li>
           <li><a class="active" href="apply.php">Apply</a></li>
+          <li><a href="login.php" class="<?= basename($_SERVER['PHP_SELF'])==='login.php' ? 'active' : '' ?>">Manager Login</a></li>
         </ul>
       </nav>
     </div>
