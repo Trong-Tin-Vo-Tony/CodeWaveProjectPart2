@@ -1,0 +1,150 @@
+:root{
+  --bg:#0b1020;
+  --panel:#111831;
+  --soft:#1a2342;
+  --txt:#e9eefc;
+  --muted:#a9b4d6;
+  --brand:#5b8cff;
+  --ok:#34d399;
+  --warn:#f59e0b;
+  --danger:#ef4444;
+  --border:rgba(255,255,255,.08);
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --radius:14px;
+}
+
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#f7f9ff;
+    --panel:#ffffff;
+    --soft:#f0f3ff;
+    --txt:#141a2e;
+    --muted:#5a627c;
+    --brand:#345bff;
+    --border:rgba(20,26,46,.08);
+    --shadow:0 10px 25px rgba(20,26,46,.08);
+  }
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: ui-sans-serif,system-ui,Segoe UI,Roboto,Arial;
+  color:var(--txt);
+  background: radial-gradient(1200px 800px at 20% -10%, #213a7a33, transparent),
+              radial-gradient(1200px 900px at 110% 10%, #5b8cff22, transparent),
+              var(--bg);
+}
+
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+.badge{display:inline-block;padding:.25rem .6rem;border:1px solid var(--border);border-radius:999px;background:var(--soft);font-size:.85rem;color:var(--muted)}
+
+.wrap{max-width:1100px;margin:0 auto;padding:24px}
+.center{min-height:100dvh;display:grid;place-items:center;padding:24px}
+
+.card{
+  width:min(720px, 92vw);
+  background:linear-gradient(180deg, var(--panel), var(--soft));
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  border-radius:var(--radius);
+  padding:28px;
+}
+
+h1,h2{margin:.2rem 0 1rem;font-weight:700;letter-spacing:.25px}
+.muted{color:var(--muted)}
+
+form{display:block}
+label{display:block;margin:.25rem 0 .35rem;font-size:.92rem;color:var(--muted)}
+input[type=text],
+input[type=password],
+input[type=number],
+input[type=date],
+select{
+  width:100%;
+  padding:.7rem .8rem;
+  border:1px solid var(--border);
+  background:#0e1630;
+  color:var(--txt);
+  border-radius:10px;
+  outline:none;
+}
+input::placeholder{color:#90a0c9}
+@media (prefers-color-scheme: light){
+  input,select{background:#fff}
+}
+
+button{
+  padding:.7rem 1rem;
+  border:1px solid var(--border);
+  background:linear-gradient(180deg, var(--brand), #274dff);
+  color:#fff;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+  transition:transform .05s ease, filter .2s ease;
+}
+button:hover{filter:brightness(1.05)}
+button:active{transform:translateY(1px)}
+button.secondary{
+  background:linear-gradient(180deg, #2b355d, #1c2447);
+  color:var(--txt);
+}
+
+.flash{
+  background:rgba(91,140,255,.12);
+  border:1px solid rgba(91,140,255,.35);
+  color:#cfe0ff;
+  padding:.6rem .8rem;
+  border-radius:10px;
+  margin:.5rem 0 1rem;
+}
+.error{color:#ffb4c0;margin:.5rem 0}
+
+/* ---------- Login layout ---------- */
+.login-panel .actions{display:flex;gap:.6rem;align-items:center;margin-top:.75rem}
+.login-panel .brand{font-size:1.05rem;color:var(--muted)}
+
+/* ---------- Manage page ---------- */
+header.manage{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:1rem;margin-bottom:16px
+}
+header.manage .right{display:flex;gap:.6rem;align-items:center}
+
+fieldset{
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px;
+  background:linear-gradient(180deg, var(--panel), var(--soft));
+}
+legend{padding:0 .5rem;color:var(--muted)}
+
+.topbar{display:flex;flex-direction:column;gap:12px;margin:8px 0 14px}
+.controls{display:flex;flex-wrap:wrap;gap:12px}
+.controls > div{min-width:220px}
+
+table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  background:linear-gradient(180deg, var(--panel), var(--soft));
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+th,td{padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+th{font-weight:700;color:var(--muted);background:rgba(255,255,255,.02)}
+tr:hover td{background:rgba(91,140,255,.06)}
+td .inline-form{display:flex;gap:.6rem;align-items:center}
+.status-New{color:#9dd1ff}
+.status-Current{color:#f3d08a}
+.status-Final{color:#9ef0c0}
+
+.danger{
+  border:1px dashed rgba(239,68,68,.4);
+  background:linear-gradient(180deg, #2d1320, #22101a);
+}
+.danger legend{color:#ffb4c0}
