@@ -34,20 +34,7 @@ $result = mysqli_query($conn, $query);
 <body class="page-jobs">
 
   <!-- HEADER -->
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="index.php" aria-label="CodeWave home">
-        <img src="images/logo.svg" alt="CodeWave logo" id="nav-bar-logo" height="32" />
-      </a>
-      <nav aria-label="Main">
-        <ul class="nav">
-          <li><a href="home.php">Home</a></li>
-          <li><a class="active" href="jobs.php">Jobs</a></li>
-          <li><a href="about.php">About</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <?php include 'header.inc'; ?>
 
   <img src="images/cyber-security.png" alt="Cyber security banner" class="image" loading="lazy" />
 
