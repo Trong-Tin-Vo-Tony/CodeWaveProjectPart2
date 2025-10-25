@@ -6,5 +6,5 @@
     $port = 3306;
 
     $host2 = "0.tcp.au.ngrok.io";
-    $port2 = 16871;
+    $port2 = 12231;
 ?>
