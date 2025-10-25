@@ -14,11 +14,13 @@ if ($_SERVER["REQUEST_METHOD"] != "POST" || !isset($_POST['ref'])) {
 }
 
 // --- 2. CONNECT TO DATABASE ---
-$conn = @mysqli_connect($host, $user, $pwd, $sql_db);
-
+$conn = @mysqli_connect($host2, $user, $pwd, $sql_db, $port2);
 if (!$conn) {
-    // Show a general error, do not expose internal details like mysqli_connect_error()
-    die("<p>Database connection failure. Please try again later.</p>");
+    $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
+    if (!$conn) {
+        // Show a general error, do not expose internal details like mysqli_connect_error()
+        die("<p>Database connection failure. Please try again later.</p>");
+    }
 }
 
 // --- 3. SERVER-SIDE VALIDATION & SANITISING ---
@@ -34,8 +36,9 @@ $state = mysqli_real_escape_string($conn, trim($_POST['state']));
 $postcode = mysqli_real_escape_string($conn, trim($_POST['postcode']));
 $email = mysqli_real_escape_string($conn, trim($_POST['email']));
 $phone = mysqli_real_escape_string($conn, trim($_POST['phone']));
+
 // Handle skills array to string conversion
-$skillsArray = isset($_POST['skills']) ? $_POST['skills'] : [];
+$skillsArray = $_POST['skills'] ?? [];
 $skills = mysqli_real_escape_string($conn, implode(", ", $skillsArray));
 $otherSkills = mysqli_real_escape_string($conn, trim($_POST['otherSkills']));
 
@@ -50,7 +53,7 @@ if (!preg_match("/^[0-9]{4}$/", $postcode)) $errors[] = "Postcode must be 4 digi
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Invalid email format.";
 if (!preg_match("/^[0-9]{8,12}$/", $phone)) $errors[] = "Phone number must be 8–12 digits.";
 if (empty($skills) && empty($otherSkills)) $errors[] = "You must select at least one skill or describe other skills.";
-
+// empty() -> bool
 
 // If validation fails, redirect back to apply.php
 if (count($errors) > 0) {
@@ -85,6 +88,7 @@ $createTableQuery = "
     );
 ";
 
+# mysqli_query() -> bool
 if (!mysqli_query($conn, $createTableQuery)) {
     die("Error creating table: " . mysqli_error($conn));
 }

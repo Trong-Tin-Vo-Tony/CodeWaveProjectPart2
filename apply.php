@@ -70,7 +70,7 @@ function selected($field, $value, $formData) {
         </div>
     <?php endif; ?>
 
-    <form class="app-form" method="post" action="process_eoi.php" autocomplete="on">
+    <form class="app-form" method="post" action="process_eoi.php" autocomplete="on" onsubmit="return false;">
       <div class="field">
         <label for="ref">Job reference number</label>
         <input id="ref" name="ref" type="text" <?php echo sticky('ref', $formData); ?> />
@@ -143,7 +143,7 @@ function selected($field, $value, $formData) {
         </textarea>
       </div>
 
-      <button type="submit" class="apply-btn">Submit Application</button>
+      <button type="submit" class="apply-btn" onclick="window.location.href='thankyou.php';">Submit Application</button>
     </form>
 </main>
 
