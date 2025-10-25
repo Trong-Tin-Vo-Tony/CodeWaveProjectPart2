@@ -116,25 +116,27 @@ if ($success) {
 
 mysqli_stmt_close($stmt);
 mysqli_close($conn);
-?>
+
+if ($EOInumber) {
+    $_SESSION["eoi-render-info"] = '
 <main class="main_container">
-    <h2>Application Confirmation</h2>
-    <?php if ($EOInumber): ?>
-        <section class="confirmation">
-            <p>✅ **Success!** Your Expression of Interest has been successfully submitted.</p>
-            <p>Your unique **EOI Number** is: <strong class="eoi-number"><?php echo $EOInumber; ?></strong></p>
-            <p>We recommend you save this number for future reference.</p>
-            <p><a href="jobs.php" class="back-link">View other jobs</a> | <a href="index.php" class="back-link">Return to Home Page</a></p>
-        </section>
-    <?php else: ?>
-        <section class="error-message">
-            <p>❌ **Error:** Could not process your application. Please check your form submission and try again.</p>
-            <p><a href="apply.php" class="back-link">Go back to the application form</a></p>
-        </section>
-    <?php endif; ?>
-</main>
-<?php
-require_once('footer.inc');
-// Ensure no further HTML output
-exit();
+    <section class="confirmation">
+        <p>✅ **Success!** Your Expression of Interest has been successfully submitted.</p>
+        <p>Your unique **EOI Number** is: <strong class="eoi-number">' . htmlspecialchars($EOInumber) . '</strong></p>
+        <p>We recommend you save this number for future reference.</p>
+        <p><a href="jobs.php" class="back-link">View other jobs</a> | <a href="index.php" class="back-link">Return to Home Page</a></p>
+    </section>
+</main>';
+}
+else {
+    $_SESSION['eoi-render-info'] = '
+    <section class="error-message">
+        <p>❌ **Error:** Could not process your application. Please check your form submission and try again.</p>
+        <p><a href="apply.php" class="back-link">Go back to the application form</a></p>
+    </section>';
+}
+
+header("Location: thankyou.php");
+exit
+
 ?>

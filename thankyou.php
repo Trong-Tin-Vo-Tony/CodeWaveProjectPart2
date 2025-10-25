@@ -17,6 +17,17 @@
       </div>
     </main>
 
+    <?php 
+      session_start();
+      if ($_SESSION['eoi-render-info'] != null) {
+        echo($_SESSION['eoi-render-info']);
+      }
+      else{
+        echo("Crappppppppp");
+      }
+      session_abort();
+    ?>
+
     <?php include 'footer.inc'; ?>
   </body>
 </html>

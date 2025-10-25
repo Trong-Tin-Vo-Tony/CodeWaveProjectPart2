@@ -145,6 +145,9 @@ function selected($field, $value, $formData) {
 
       <button type="submit" class="apply-btn">Submit Application</button>
     </form>
+
+
+</main>
 </main>
 
 <?php require_once('footer.inc'); ?>
