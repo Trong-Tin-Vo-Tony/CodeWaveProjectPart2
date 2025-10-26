@@ -8,10 +8,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $u = trim($_POST['username'] ?? '');
   $p = $_POST['password'] ?? '';
 
-  $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
+  $conn = @mysqli_connect($host2, $user, $pwd, $sql_db, $port2);
   if (!$conn) {
-    $err = 'Database connection failed.';
-  } else {
+    $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
+    if (!$conn) {
+      $err = 'Database connection failed.';
+    }
+  } 
+  else {
     $stmt = $conn->prepare("SELECT user_id, username, password_hash, role FROM user WHERE username = ?");
     $stmt->bind_param('s', $u);
     $stmt->execute();
@@ -39,10 +43,10 @@ function h($s){ return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
   <meta charset="utf-8">
   <title>Manager Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="styles/style.css">
-  <link rel="stylesheet" href="styles/admin.css">
+  <link rel="stylesheet" href="styles/styles.css">
+  <!-- <link rel="stylesheet" href="styles/admin.css"> -->
 </head>
-<body>
+<body class='page-login'>
 
 <?php include 'header.inc'; ?>
 

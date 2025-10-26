@@ -1,19 +1,9 @@
 <?php
 // connect to database
 require_once "settings.php"; 
-$conn = mysqli_connect($host, $user, $pwd, $sql_db);
-
-$conn = @mysqli_connect($host2, $user, $pwd, $sql_db, $port2);
+$conn = mysqli_connect($host2, $user, $pwd, $sql_db, $port2);
 if (!$conn) {
-    $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
-    if (!$conn) {
-        // Show a general error, do not expose internal details like mysqli_connect_error()
-        die("<p>Database connection failure. Please try again later.</p>");
-    }
-}
-
-// if connection fails
-if (!$conn) {
+  $conn = mysqli_connect($host, $user, $pwd, $sql_db);
   die("<p>Database connection failed: " . mysqli_connect_error() . "</p>");
 }
 
@@ -30,11 +20,27 @@ $result = mysqli_query($conn, $query);
   <link rel="stylesheet" href="styles/styles.css" />
 
   <title>CodeWave Jobs</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    img { max-width: 100%; height: auto; }
+    a { color: var(--brand); }
+    h1, h2, h3 { line-height: 1.2; margin: 0 0 12px; }
+  </style>
 </head>
 <body class="page-jobs">
 
   <!-- HEADER -->
-  <?php include 'header.inc'; ?>
+  <?php include 'header.inc';?>
 
   <img src="images/cyber-security.png" alt="Cyber security banner" class="image" loading="lazy" />
 
@@ -95,11 +101,8 @@ $result = mysqli_query($conn, $query);
     <a href="apply.php" class="apply-btn">Apply Now</a>
   </div>
 
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <p>&copy; CodeWave Pty Ltd — COS10026</p>
-    </div>
-  </footer>
+  <?php include 'footer.inc';?>
+
 
 </body>
 </html>

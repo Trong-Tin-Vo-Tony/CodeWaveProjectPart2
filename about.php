@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>CodeWave - About</title>
     <link rel="icon" href="images/logo.svg" type="image/svg+xml"/>
-    <link rel="stylesheet" href="styles/base.css"/>
-    <link rel="stylesheet" href="styles/nav-bar.css"/>
-    <link rel="stylesheet" href="styles/about.css"/>
+    <link rel="stylesheet" href="styles/styles.css"/>
 
     <style>
       img { max-width: 100%; height: auto; }
@@ -61,7 +59,7 @@
     </style>
   </head>
 
-  <body>
+  <body class='page-about'>
     <?php include 'header.inc'; ?>
 
     <main>
@@ -108,18 +106,18 @@
             <section class="card">
               <h2>Contributions & Quotes</h2>
               <dl>
-                <dt>Sajid Hasan (MIA)</dt>
+                <dt>Sajid Hasan</dt>
                 <dd>Team Leader & Application Page Developer - "Ship small, learn fast." (Fav. language: <span lang="en">TypeScript</span>)</dd>
-
+                <br>
                 <dt>Kammantrige Siumi Sathsarani</dt>
                 <dd>Home & Group Details Manager - "Design first, code clean." (Fav. language: <span lang="en">HTML</span> - Sinhala: <span lang="en"> </span>)</dd>
-
+                <br>
                 <dt>Sandeep Y. D. S. Anthonydura</dt>
                 <dd>Job Apps & Position Descriptions - "Clarity beats cleverness." (First language: <span lang="en"> Sinhala </span>)</dd>
-
+                <br>
                 <dt>Antonio Prince</dt>
                 <dd>Enhancements & Styling — “Details make the experience.” (Fav. language: <span lang="en">CSS</span>)</dd>
-
+                <br>
                 <dt>Trong Tin Vo</dt>
                 <dd>Styling & Quality Insurance — “It'll work if you bang your head at it enough." (Fav. language: 
                   <span lang="en" style="color: orange; font-weight: bold">Python</span>)
@@ -152,11 +150,8 @@
       </section>
     </main>
 
-    <footer class="site-footer">
-      <div class="container footer-inner">
-        <p>&copy; CodeWave Pty Ltd — COS10026</p>
-      </div>
-    </footer>
+    <?php include 'footer.inc'; ?>
+
 
     <script src="scripts/animate.js"></script>
   </body>

@@ -8,6 +8,7 @@ $formData = isset($_SESSION['form_data']) ? $_SESSION['form_data'] : [];
 unset($_SESSION['eoi_errors']);
 unset($_SESSION['form_data']);
 
+
 function sticky($field, $formData) {
     if (isset($formData[$field])) {
         
@@ -16,12 +17,15 @@ function sticky($field, $formData) {
     return '';
 }
 
+
 function checked($field, $value, $formData) {
+    
     if ($field == 'skills' && isset($formData[$field]) && in_array($value, $formData[$field])) {
         return 'checked';
     }
     return '';
 }
+
 
 function selected($field, $value, $formData) {
     if (isset($formData[$field]) && $formData[$field] == $value) {
@@ -29,6 +33,8 @@ function selected($field, $value, $formData) {
     }
     return '';
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,11 +45,15 @@ function selected($field, $value, $formData) {
   <link rel="icon" href="images/logo.svg" type="image/svg+xml" />
 
   <link rel="stylesheet" href="styles/styles.css"/>
+  <!-- <link rel="stylesheet" href="styles/apply.css"/> -->
+  <!-- <link rel="stylesheet" href="styles/styles.css"/> -->
+
 </head>
 
 <body class="page-apply">
 <?php require_once('header.inc'); ?>
-<?php require_once('nav.inc'); ?> <main class="main_container">
+
+<main class="main_container">
     <header>
       <h1>Apply for a Job</h1>
       <p>Please complete all required fields. Data validation is performed on the server.</p>
@@ -137,6 +147,7 @@ function selected($field, $value, $formData) {
     </form>
 
 
+</main>
 </main>
 
 <?php require_once('footer.inc'); ?>
