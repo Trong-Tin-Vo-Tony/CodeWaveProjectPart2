@@ -1,10 +1,13 @@
 <?php
 // connect to database
 require_once "settings.php"; 
+
 $conn = mysqli_connect($host2, $user, $pwd, $sql_db, $port2);
 if (!$conn) {
   $conn = mysqli_connect($host, $user, $pwd, $sql_db);
-  die("<p>Database connection failed: " . mysqli_connect_error() . "</p>");
+  if (!$conn) {
+    die("<p>Database connection failed: " . mysqli_connect_error() . "</p>");
+  }
 }
 
 // get all jobs from table
