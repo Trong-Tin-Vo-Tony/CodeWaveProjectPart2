@@ -134,14 +134,22 @@ table{
   border:1px solid var(--border);
   border-radius:12px;
   overflow:hidden;
+  table-layout: auto;
 }
 th,td{padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
 th{font-weight:700;color:var(--muted);background:rgba(255,255,255,.02)}
 tr:hover td{background:rgba(91,140,255,.06)}
-td .inline-form{display:flex;gap:.6rem;align-items:center}
+td .inline-form{align-items:center} /*gap:.6rem; */
 .status-New{color:#9dd1ff}
 .status-Current{color:#f3d08a}
 .status-Final{color:#9ef0c0}
+
+td select[name="status"] {
+    /* Limit the select box width so it doesn't unnecessarily stretch the column */
+    width: auto; 
+    /* Adjust padding/height to better fit the 'Update' button */
+    padding: .6rem .8rem;
+}
 
 .danger{
   border:1px dashed rgba(239,68,68,.4);
