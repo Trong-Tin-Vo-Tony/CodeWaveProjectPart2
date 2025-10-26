@@ -14,32 +14,166 @@
     (from base.css)
 */
 :root {
---bg: #0b0c10;
---panel: #121419;
---text: #eef2f8;
---muted: #9aa4b7;
---card: #161922;
---border: #2a3040;
---brand: hsl(215, 100%, 71%);
---accent: #9bffdc;
+  --bg: #0b0c10;
+  --panel: #121419;
+  --text: #eef2f8;
+  --muted: #9aa4b7;
+  --card: #161922;
+  --border: #2a3040;
+  --brand: #6aa7ff;
+  --accent: #9bffdc;
 }
 
-/* 2) Resets & base elements 
-    (from base.css, home.css)
-*/
-* { box-sizing: border-box; }
-
+/* --- 2. Reset & Typography --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 html, body {
-margin: 0;
-background: var(--bg);
-color: var(--text);
-font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-line-height: 1.5;
+  height: 100%;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: radial-gradient(circle at 25% 20%, #1a2238 0%, #0b0c10 70%);
+  background-attachment: fixed;
+  overflow-x: hidden;
 }
 
-img { max-width: 100%; height: auto; }
-a { color: var(--brand); }
-h1, h2, h3 { line-height: 1.2; margin: 0 0 12px; }
+/* Subtle animated star glow */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image:
+    radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,0.12), transparent),
+    radial-gradient(3px 3px at 80% 50%, rgba(106,167,255,0.25), transparent),
+    radial-gradient(2px 2px at 30% 80%, rgba(155,255,220,0.25), transparent),
+    radial-gradient(3px 3px at 60% 10%, rgba(255,255,255,0.08), transparent);
+  animation: twinkle 10s infinite alternate;
+  z-index: 0;
+}
+@keyframes twinkle {
+  from { opacity: 0.4; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.05); }
+}
+
+/* --- 3. Layout helpers --- */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+}
+.section {
+  padding: 60px 0;
+}
+.grid {
+  display: grid;
+  gap: 20px;
+}
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+
+/* --- 4. Cards --- */
+.card {
+  background: rgba(18, 20, 28, 0.9);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 25px rgba(155,255,220,0.15);
+}
+
+/* --- 5. Tables --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+}
+th { color: var(--accent); }
+tr:hover {
+  background: rgba(155,255,220,0.05);
+  transition: background 0.3s ease;
+}
+
+/* --- 6. Footer --- */
+.site-footer {
+  background: rgba(11,12,16,0.95);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: 20px 0;
+  box-shadow: 0 -2px 15px rgba(0,0,0,0.4);
+  position: relative;
+  z-index: 1;
+}
+.footer-inner p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* --- 7. Headings --- */
+h1, h2, h3 {
+  line-height: 1.2;
+  margin-bottom: 14px;
+}
+h1 {
+  color: var(--accent);
+  text-align: center;
+  text-shadow: 0 0 8px rgba(106,167,255,0.5);
+}
+h2, h3 {
+  color: var(--brand);
+}
+
+/* --- 8. Links & Buttons --- */
+a {
+  color: var(--brand);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+a:hover {
+  color: var(--accent);
+}
+button, .apply-btn, .home-btn {
+  background: var(--brand);
+  color: #000;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+button:hover, .apply-btn:hover, .home-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 15px var(--accent);
+}
+
+/* --- 9. Accessibility --- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* --- 10. Responsive tweaks --- */
+@media (max-width: 800px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  h1 { font-size: 1.6rem; }
+}
 
 /* 3) Global Components (Header/Footer)
     (from base.css, nav-bar.css)
@@ -47,54 +181,54 @@ h1, h2, h3 { line-height: 1.2; margin: 0 0 12px; }
 
 /* Header & nav */
 .site-header {
-position: sticky;
-top: 0px;
-z-index: 10;
-background: rgba(11, 12, 16, 0.9);
-backdrop-filter: blur(6px);
-border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0px;
+  z-index: 10;
+  background: rgba(11, 12, 16, 0.9);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--border);
 }
 
 .header-inner {
-display: flex;
-align-items: center;
-justify-content: space-between;
-gap: 16px;
-min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
 }
 
 .site-header .header-inner a { color: var(--brand); }
 #nav-bar-logo { max-width: 100%; height: auto; }
 
 .nav {
-display: flex;
-gap: 10px;
-margin: 0;
-padding: 0;
-list-style: none;
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .nav a {
-display: block;
-padding: 8px 12px;
-border-radius: 10px;
-text-decoration: none;
+  display: block;
+  padding: 8px 12px;
+  border-radius: 10px;
+  text-decoration: none;
 }
 
 .nav a:hover {
-background: var(--panel);
+  background: var(--panel);
 }
 
 /* Footer */
 .site-footer {
-background: #0a0b0f;
-border-top: 1px solid var(--border);
+  background: #0a0b0f;
+  border-top: 1px solid var(--border);
 }
 
 .footer-inner {
-padding: 18px;
-text-align: center;
-color: var(--muted);
+  padding: 18px;
+  text-align: center;
+  color: var(--muted);
 }
 
 /* 4) Global Layout & Utilities
@@ -111,10 +245,10 @@ color: var(--muted);
 
 /* Card (Base style) */
 .card {
-background: var(--card);
-border: 1px solid var(--border);
-border-radius: 14px;
-padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
 }
 
 /* Tables */
@@ -128,13 +262,13 @@ caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
 
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
-* { animation: none !important; transition: none !important; }
+  * { animation: none !important; transition: none !important; }
 }
 
 /* Responsive tweaks */
 @media (max-width: 800px) {
-.grid-2,
-.grid-3 { grid-template-columns: 1fr; }
+  .grid-2,
+  .grid-3 { grid-template-columns: 1fr; }
 }
 
 
@@ -146,61 +280,671 @@ caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
 /* Page: Home (home.html)
     Requires: <body class="page-home">
 */
-.page-home .lead { color: var(--muted); }
+/* ----------------------------
+    CodeWave - Home Page Styles
+    Author: CodeWave Team
+    Purpose: Polished landing visuals, clear layout, accessibility-friendly
+-----------------------------*/
 
-/* Hero */
-.page-home .hero {
-  padding: 48px 0;
-  border-bottom: 1px solid var(--border);
-  background:
-  radial-gradient(900px 300px at 100% 0%, #112235, transparent),
-  radial-gradient(1000px 400px at 10% -10%, #1a2132, transparent);
+/* Global Reset & Essentials */
+.page-home img { max-width: 100%; height: auto; display: block; }
+.page-home a { color: var(--brand); text-decoration: none; }
+.page-home a:hover { text-decoration: underline; }
+
+/* Headings & text */
+.page-home h1,
+.page-home h2,
+.page-home h3 {
+    line-height: 1.2;
+    margin: 0 0 12px;
+    color: var(--text);
 }
 
-.page-home .hero-logo { display: block; margin-bottom: 8px; }
-.page-home .slogan { font-style: italic; color: var(--accent); }
+.page-home .lead {
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Layout helpers */
+.page-home .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.page-home .section {
+    padding: 64px 0;
+}
+
+/* Grid layouts */
+.page-home .grid {
+    display: grid;
+    gap: 16px;
+}
+
+.page-home .grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Card Component */
+.page-home .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.page-home .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* ----------------------------
+    Hero Section
+-----------------------------*/
+
+.page-home .hero {
+    padding: 80px 0;
+    text-align: center;
+    background:
+        linear-gradient(120deg, rgba(18,39,60,0.95), rgba(9,19,30,0.95)),
+        radial-gradient(circle at top right, rgba(0,128,255,0.2), transparent 70%);
+    background-blend-mode: overlay;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hero Logo */
+.page-home .hero-logo {
+    display: block;
+    margin: 0 auto 16px;
+    animation: fadeIn 1.2s ease-in-out;
+}
+
+/* Hero Headline */
+.page-home .hero h1 {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+    color: #fff;
+    letter-spacing: 1px;
+    animation: slideDown 1s ease-in-out;
+}
+
+/* Slogan text */
+.page-home .slogan {
+    font-style: italic;
+    color: var(--accent);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    animation: fadeIn 2s ease-in-out;
+}
+
+/* Lead text */
+.page-home .hero .lead {
+    color: #d8e1f5;
+    max-width: 700px;
+    margin: 0 auto 20px;
+    line-height: 1.6;
+    animation: fadeInUp 1.8s ease-in-out;
+}
+
+/* Call to Action Button */
+.page-home .cta-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    margin-top: 15px;
+    background: var(--brand);
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.page-home .cta-btn:hover {
+    background: #3d82ff;
+    transform: scale(1.05);
+}
+
+/* Hero Image */
+.page-home .hero-figure {
+    margin-top: 40px;
+}
+
+.page-home .hero-figure img {
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+    animation: fadeIn 2.5s ease-in-out;
+}
+
+.page-home .hero-figure figcaption {
+    margin-top: 8px;
+    color: #b8c6e0;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+/* ----------------------------
+    Animations
+-----------------------------*/
+/* @keyframes are global and should not be scoped */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* ----------------------------
+    Responsive Design
+-----------------------------*/
+
+/* The `.page-home` selector must be placed *inside* the media query, on the selector */
+@media (max-width: 900px) {
+    .page-home .grid-3 {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .page-home .hero h1 {
+        font-size: 2.2rem;
+    }
+
+    .page-home .hero .lead {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .page-home .grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .page-home .hero {
+        padding: 60px 0;
+    }
+
+    .page-home .hero h1 {
+        font-size: 1.9rem;
+    }
+
+    .page-home .cta-btn {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+    }
+}
 
 /* Page: About (about.html)
     Requires: <body class="page-about">
 */
 
-/* Card margin override */
+/* Headings & text */
+.page-about h1,
+.page-about h2,
+.page-about h3 { line-height: 1.2; margin: 0 0 12px; } /* Top | left and right | bottom */
+
+/* Layout helpers */
+.page-about .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; } /* auto = center (horizontally) in this context */
+.page-about .section { padding: 56px 0; }
+
+.page-about .grid { display: grid; gap: 16px; }
+.page-about .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* 3) Components */
+
+/* Card */
+.page-about .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin: 10px 0px;
+}
+
+/* Tables */
+.page-about table { width: 100%; border-collapse: collapse; }
+.page-about th,
+.page-about td { padding: 8px; text-align: left; border: 1px solid var(--border); }
+.page-about caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
+
+/* Respect reduced motion */
+/* @media rules are global wrappers, but the selector inside is updated */
+@media (prefers-reduced-motion: reduce) {
+    .page-about * { animation: none !important; transition: none !important; }
+}
+
+/* 5) Responsive tweaks */
+/* @media rules are global wrappers, but the selectors inside are updated */
+@media (max-width: 800px) {
+    .page-about .grid-2,
+    .page-about .grid-3 { grid-template-columns: 1fr; }
+}
+
+.page-about .group-photo {
+    display: block;
+    margin: 0 auto;
+    max-width: 700px;  /* adjust width as you like */
+    height: auto;
+    border-radius: 12px; /* optional: round corners */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+/* ---- Group Photo Section ---- */
+.page-about .group-photo-card {
+    text-align: center;
+}
+
+.page-about .group-photo-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.page-about .member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px; /* adjust per your design */
+}
+
+.page-about .member img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+}
+
+.page-about .member img:hover {
+    transform: scale(1.05);
+}
+
+.page-about .member figcaption {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.page-about .team-caption {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-top: 10px;
+}
+
+/* Page: Home (home.html) */
+.page-home .lead { color: var(--muted); }
+
+.page-home .hero {
+  padding: 48px 0;
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(900px 300px at 100% 0%, #112235, transparent),
+    radial-gradient(1000px 400px at 10% -10%, #1a2132, transparent);
+}
+
+.page-home .hero-logo { display: block; margin-bottom: 8px; }
+.page-home .slogan { font-style: italic; color: var(--accent); }
+
+/* Page: About (about.html) */
 .page-about .card {
   margin: 10px 0px;
 }
 
-/* Page: Jobs (Jobs.html)
-    Requires: <body class="page-jobs">
-*/
-
-/* Hero/banner image */
+/* Page: Jobs (jobs.html) */
 .page-jobs .image {
-width: 100%;
-height: 400px;
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-bottom: 2px solid var(--border);
 }
 
-/* Apply button container and alignment */
+/* Apply button container */
 .page-jobs .btn-container {
-text-align: center;
-margin: 20px 0;
+  text-align: center;
+  margin: 40px 0;
 }
 
-/* Apply button default style */
+/* Apply button */
 .page-jobs .apply-btn {
-display: inline-block;
-background-color: red;
-color: white;
-padding: 12px 24px;
-text-decoration: none;
-border-radius: 6px;
-font-size: 16px;
-font-weight: bold;
+  display: inline-block;
+  background-color: var(--brand);
+  color: var(--text);
+  padding: 12px 28px;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 17px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(106, 167, 255, 0.4);
 }
 
-/* Apply button hover effect */
 .page-jobs .apply-btn:hover {
-background-color: darkred;
+  background-color: var(--accent);
+  color: #000;
 }
+
+/* Job cards */
+.page-jobs .job {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 30px 0;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+}
+
+.page-jobs .job h3 {
+  color: var(--accent);
+  margin-bottom: 5px;
+}
+
+.page-jobs .job h4 {
+  margin-top: 15px;
+  color: var(--brand);
+}
+
+.page-jobs .salary {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.page-jobs .ref {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Requirements container */
+.page-jobs aside {
+  background: var(--panel);
+  border-left: 4px solid var(--brand);
+  padding: 15px 20px;
+  margin-top: 15px;
+  border-radius: 4px;
+}
+
+.page-jobs aside h4 {
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.page-jobs ol {
+  margin-left: 25px;
+  color: var(--text);
+}
+
+/* Headings and content alignment */
+.page-jobs main h1,
+.page-jobs main h2,
+.page-jobs main h3 {
+  color: var(--text);
+}
+
+.page-jobs p,
+.page-jobs li {
+  color: var(--text);
+}
+
+/* Page: Job Application (apply.html) */
+.page-apply .main_container {
+  border: 2px solid var(--border);
+  background: var(--panel);
+  padding: 30px;
+  margin: 30px auto;
+  border-radius: 10px;
+  max-width: 900px;
+}
+
+.page-apply .field {
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+}
+
+.page-apply h1, h2, legend {
+  color: var(--accent);
+}
+
+.page-apply label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+/* Inputs and forms */
+.page-apply input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.page-apply input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.page-apply input[type="checkbox"],
+.page-apply input[type="radio"] {
+  width: auto;
+  margin-right: 8px;
+  accent-color: var(--brand);
+}
+
+/* Button styling */
+.page-apply button.apply-btn {
+  background: var(--brand);
+  color: var(--text);
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.page-apply button.apply-btn:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+/* Form adjustments */
+.page-apply form input[type="text"], 
+.page-apply form input[type="email"], 
+.page-apply form input[type="tel"], 
+.page-apply form select, 
+.page-apply form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+}
+
+.page-apply label, legend {
+  font-weight: bold;
+  color: var(--accent);
+}
+
+.page-apply fieldset.field {
+  border: 1px solid var(--border);
+  padding: 20px;
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.page-apply .field {
+  margin-bottom: 20px;
+}
+
+/* Page: Manager Login (login.php) */
+/* Variable definitions scoped to the .page-login wrapper (assuming it's on <body> or <html>) */
+.page-login {
+    --bg:#0b1020;
+    --panel:#111831;
+    --soft:#1a2342;
+    --txt:#e9eefc;
+    --muted:#a9b4d6;
+    --brand:#5b8cff;
+    --ok:#34d399;
+    --warn:#f59e0b;
+    --danger:#ef4444;
+    --border:rgba(255,255,255,.08);
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+    --radius:14px;
+}
+
+/* Scoping universal selector: only elements *inside* .page-login */
+.page-login * {box-sizing:border-box}
+
+/* Scoping root elements: must apply .page-login directly to html/body */
+html.page-login, body.page-login {height:100%}
+
+body.page-login {
+    margin:0;
+    font-family: ui-sans-serif,system-ui,Segoe UI,Roboto,Arial;
+    color:var(--txt);
+    background: radial-gradient(1200px 800px at 20% -10%, #213a7a33, transparent),
+                radial-gradient(1200px 900px at 110% 10%, #5b8cff22, transparent),
+                var(--bg);
+}
+
+.page-login a{color:var(--brand);text-decoration:none}
+.page-login a:hover{text-decoration:underline}
+.page-login .badge{display:inline-block;padding:.25rem .6rem;border:1px solid var(--border);border-radius:999px;background:var(--soft);font-size:.85rem;color:var(--muted)}
+
+.page-login .wrap{max-width:1100px;margin:0 auto;padding:24px}
+.page-login .center{min-height:100dvh;display:grid;place-items:center;padding:24px}
+
+.page-login .card{
+    width:min(720px, 92vw);
+    background:linear-gradient(180deg, var(--panel), var(--soft));
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+    border-radius:var(--radius);
+    padding:28px;
+}
+
+.page-login h1,
+.page-login h2 {margin:.2rem 0 1rem;font-weight:700;letter-spacing:.25px}
+.page-login .muted{color:var(--muted)}
+
+.page-login form{display:block}
+.page-login label{display:block;margin:.25rem 0 .35rem;font-size:.92rem;color:var(--muted)}
+
+/* Scoping input types */
+.page-login input[type=text],
+.page-login input[type=password],
+.page-login input[type=number],
+.page-login input[type=date],
+.page-login select{
+    width:100%;
+    padding:.7rem .8rem;
+    border:1px solid var(--border);
+    background:#0e1630;
+    color:var(--txt);
+    border-radius:10px;
+    outline:none;
+}
+.page-login input::placeholder{color:#90a0c9}
+@media (prefers-color-scheme: light){
+    .page-login input,
+    .page-login select{background:#fff}
+}
+
+.page-login button{
+    padding:.7rem 1rem;
+    border:1px solid var(--border);
+    background:linear-gradient(180deg, var(--brand), #274dff);
+    color:#fff;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    transition:transform .05s ease, filter .2s ease;
+}
+.page-login button:hover{filter:brightness(1.05)}
+.page-login button:active{transform:translateY(1px)}
+.page-login button.secondary{
+    background:linear-gradient(180deg, #2b355d, #1c2447);
+    color:var(--txt);
+}
+
+.page-login .flash{
+    background:rgba(91,140,255,.12);
+    border:1px solid rgba(91,140,255,.35);
+    color:#cfe0ff;
+    padding:.6rem .8rem;
+    border-radius:10px;
+    margin:.5rem 0 1rem;
+}
+.page-login .error{color:#ffb4c0;margin:.5rem 0}
+
+/* ---------- Login layout ---------- */
+.page-login .login-panel .actions{display:flex;gap:.6rem;align-items:center;margin-top:.75rem}
+.page-login .login-panel .brand{font-size:1.05rem;color:var(--muted)}
+
+/* ---------- Manage page (Scoped, though likely not needed on login) ---------- */
+.page-login header.manage{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:1rem;margin-bottom:16px
+}
+.page-login header.manage .right{display:flex;gap:.6rem;align-items:center}
+
+.page-login fieldset{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px;
+    background:linear-gradient(180deg, var(--panel), var(--soft));
+}
+.page-login legend{padding:0 .5rem;color:var(--muted)}
+
+.page-login .topbar{display:flex;flex-direction:column;gap:12px;margin:8px 0 14px}
+.page-login .controls{display:flex;flex-wrap:wrap;gap:12px}
+.page-login .controls > div{min-width:220px}
+
+.page-login table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    background:linear-gradient(180deg, var(--panel), var(--soft));
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+}
+.page-login th,
+.page-login td {padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.page-login th{font-weight:700;color:var(--muted);background:rgba(255,255,255,.02)}
+.page-login tr:hover td{background:rgba(91,140,255,.06)}
+.page-login td .inline-form{display:flex;gap:.6rem;align-items:center}
+.page-login .status-New{color:#9dd1ff}
+.page-login .status-Current{color:#f3d08a}
+.page-login .status-Final{color:#9ef0c0}
+
+.page-login .danger{
+    border:1px dashed rgba(239,68,68,.4);
+    background:linear-gradient(180deg, #2d1320, #22101a);
+}
+.page-login .danger legend{color:#ffb4c0}
 
 /* Page: Thank You (Thank_you.html)
     Requires: <body class="page-thankyou">
@@ -208,42 +952,42 @@ background-color: darkred;
 
 /* Body overrides for centering */
 body.page-thankyou {
-font-family: Arial, sans-serif;
-background: #0b0c10;
-color: #fff;
-display: flex;
-align-items: center;
-justify-content: center;
-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: #0b0c10;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
 .page-thankyou .thankyou-container {
-text-align: center;
-background: rgba(255, 255, 255, 0.05);
-padding: 40px;
-border-radius: 12px;
-max-width: 500px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 500px;
 }
 
 .page-thankyou h1 {
-color: #00ffff;
-margin-bottom: 20px;
+  color: #00ffff;
+  margin-bottom: 20px;
 }
 
 .page-thankyou p {
-margin: 35px 0;
+  margin: 35px 0;
 }
 
 .page-thankyou .home-btn {
-margin: 20px;
-padding: 10px 20px;
-background: #00ffff;
-color: #000;
-text-decoration: none;
-font-weight: bold;
-border-radius: 6px;
+  margin: 20px;
+  padding: 10px 20px;
+  background: #00ffff;
+  color: #000;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
 }
 
 .page-thankyou .home-btn:hover {
-background: #00cccc;
+  background: #00cccc;
 }
