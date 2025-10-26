@@ -63,7 +63,7 @@
           CodeWave is a Melbourne-based software team dedicated to designing and developing <strong>secure, scalable, and user-friendly cloud applications</strong> for modern businesses.
         </p>
 
-        <a href="jobs.html" class="cta-btn">Explore Career Opportunities</a>
+        <a href="Jobs.php" class="cta-btn">Explore Career Opportunities</a>
 
         <figure class="hero-figure">
           <img src="images/group-photo.jpg" alt="CodeWave team collaborating on web development project"/>
@@ -97,16 +97,9 @@
   </main>
 
   <!-- Footer -->
-  <footer class="site-footer" role="contentinfo">
-    <div class="container footer-inner">
-      <p>&copy; 2025 CodeWave Pty Ltd — COS10026</p>
-      <p>
-        <a href="https://codewavetues.atlassian.net/jira/core/projects/CT/list" target="_blank" rel="noopener">Jira</a> ·
-        <a href="https://github.com/Trong-Tin-Vo-Tony/CodeWaveProject" target="_blank" rel="noopener">GitHub repository</a> ·
-        <a href="mailto:info@codewave.com">info@codewave.com</a>
-      </p>
-    </div>
-  </footer>
+  <?php 
+  include 'footer.inc';
+  ?>
 
   <!-- Script for header animation -->
   <script src="scripts/animate.js"></script>
