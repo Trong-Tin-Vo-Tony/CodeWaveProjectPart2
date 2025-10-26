@@ -3,17 +3,22 @@
 require_once 'auth.php';       // blocks access if not logged in
 require_once 'settings.php';
 
-$conn = @mysqli_connect($host, $user, $pwd, $sql_db);
-if (!$conn) { die('Database connection failed'); }
+$conn = @mysqli_connect($host2, $user, $pwd, $sql_db, $port2);
+if (!$conn) { 
+  $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
+  if (!$conn) {
+    die('Database connection failed'); 
+  }
+}
 
 function h($s){ return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
 // ---------- Sorting (whitelist) ----------
-$validSort = ['EOInumber','job_ref_num','first_name','last_name','email','phone','status','created_at'];
-$sort = $_GET['sort'] ?? 'created_at';
-$dir  = $_GET['dir']  ?? 'DESC';
-$sort = in_array($sort, $validSort, true) ? $sort : 'created_at';
-$dir  = strtoupper($dir) === 'ASC' ? 'ASC' : 'DESC';
+$validSort = ['EOInumber','jobRef','firstName','lastName', 'streetAddress', 'suburbTown', 'state', 'postcode', 'email','phone', 'skills', 'otherComments', 'status'];
+$sort = $_GET['sort'] ?? 'EOInumber';
+$order  = $_GET['order']  ?? 'DESC';
+$sort = in_array($sort, $validSort, true) ? $sort : 'EOInumber';
+$order  = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
 
 // ---------- POST actions with CSRF ----------
 $flash = '';
@@ -26,13 +31,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // Update status
   if (($_POST['action'] ?? '') === 'update_status') {
     $eoi = (int)($_POST['EOInumber'] ?? 0);
-    $st  = $_POST['status'] ?? '';
+    $status  = $_POST['status'] ?? '';
     $ok  = ['New','Current','Final'];
-    if ($eoi > 0 && in_array($st, $ok, true)) {
+    if ($eoi > 0 && in_array($status, $ok, true)) {
       $stmt = $conn->prepare("UPDATE eoi SET status=? WHERE EOInumber=?");
-      $stmt->bind_param('si', $st, $eoi);
+      $stmt->bind_param('si', $status, $eoi);
       $stmt->execute();
-      $flash = $stmt->affected_rows >= 0 ? "EOI #$eoi status updated to $st." : "No change made.";
+      $flash = $stmt->affected_rows >= 0 ? "EOI #$eoi status updated to $status." : "No change made.";
     } else {
       $flash = 'Invalid status update request.';
     }
@@ -41,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (($_POST['action'] ?? '') === 'delete_by_jobref') {
     $jobref = (int)($_POST['job_ref_num'] ?? 0);
     if ($jobref > 0) {
-      $stmt = $conn->prepare("DELETE FROM eoi WHERE job_ref_num = ?");
+      $stmt = $conn->prepare("DELETE FROM eoi WHERE jobRef = ?");
       $stmt->bind_param('i', $jobref);
       $stmt->execute();
       $flash = "Deleted {$stmt->affected_rows} EOI record(s) for Job Ref ".h($jobref).".";
@@ -60,29 +65,29 @@ $where  = [];
 $types  = '';
 $params = [];
 
-$jobSearch = trim($_GET['job_ref_num'] ?? '');
-$fnSearch  = trim($_GET['first_name'] ?? '');
-$lnSearch  = trim($_GET['last_name'] ?? '');
+// $jobSearch = trim($_GET['job_ref_num'] ?? '');
+// $fnSearch  = trim($_GET['first_name'] ?? '');
+// $lnSearch  = trim($_GET['last_name'] ?? '');
 
-if ($jobSearch !== '') {
-  $where[]  = "job_ref_num = ?";
-  $types   .= 'i';
-  $params[] = (int)$jobSearch;
-}
-if ($fnSearch !== '') {
-  $where[]  = "first_name LIKE CONCAT('%', ?, '%')";
-  $types   .= 's';
-  $params[] = $fnSearch;
-}
-if ($lnSearch !== '') {
-  $where[]  = "last_name LIKE CONCAT('%', ?, '%')";
-  $types   .= 's';
-  $params[] = $lnSearch;
-}
+// if ($jobSearch !== '') {
+//   $where[]  = "job_ref_num = ?";
+//   $types   .= 'i';
+//   $params[] = (int)$jobSearch;
+// }
+// if ($fnSearch !== '') {
+//   $where[]  = "first_name LIKE CONCAT('%', ?, '%')";
+//   $types   .= 's';
+//   $params[] = $fnSearch;
+// }
+// if ($lnSearch !== '') {
+//   $where[]  = "last_name LIKE CONCAT('%', ?, '%')";
+//   $types   .= 's';
+//   $params[] = $lnSearch;
+// }
 
-$sql = "SELECT EOInumber, job_ref_num, first_name, last_name, email, phone, status, created_at FROM eoi";
-if ($where) $sql .= " WHERE ".implode(' AND ', $where);
-$sql .= " ORDER BY $sort $dir";
+$sql = "SELECT EOInumber,jobRef,firstName,lastName, streetAddress, suburbTown, state, postcode, email, phone, skills, otherComments, status FROM eoi";
+// if ($where) $sql .= " WHERE ".implode(' AND ', $where);
+$sql .= " ORDER BY $sort $order";
 
 $stmt = $conn->prepare($sql);
 if ($types !== '') $stmt->bind_param($types, ...$params);
@@ -95,7 +100,7 @@ $result = $stmt->get_result();
   <meta charset="utf-8">
   <title>Manage EOIs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/styles.css">
   <link rel="stylesheet" href="styles/admin.css">
 </head>
 <body>
@@ -115,32 +120,20 @@ $result = $stmt->get_result();
 
   <form class="topbar" method="get" action="">
     <fieldset>
-      <legend>Search & Sort</legend>
-      <div class="controls">
-        <div>
-          <label>Job Reference</label>
-          <input type="number" name="job_ref_num" value="<?= h($jobSearch) ?>" placeholder="e.g. 10001">
-        </div>
-        <div>
-          <label>First Name</label>
-          <input type="text" name="first_name" value="<?= h($fnSearch) ?>">
-        </div>
-        <div>
-          <label>Last Name</label>
-          <input type="text" name="last_name" value="<?= h($lnSearch) ?>">
-        </div>
-        <div>
+      <legend>Sort</legend>
           <label>Sort</label>
           <select name="sort">
             <?php foreach ($validSort as $f): ?>
               <option value="<?= $f ?>" <?= $sort===$f?'selected':'' ?>><?= $f ?></option>
             <?php endforeach; ?>
           </select>
-          <select name="dir">
-            <option value="ASC"  <?= $dir==='ASC'?'selected':'' ?>>ASC</option>
-            <option value="DESC" <?= $dir==='DESC'?'selected':'' ?>>DESC</option>
+          <select name="order">
+            <option value="ASC"  <?= $order==='ASC'?'selected':'' ?>>ASC</option>
+            <option value="DESC" <?= $order==='DESC'?'selected':'' ?>>DESC</option>
           </select>
         </div>
+        <br/>
+        <br/>
         <div style="align-self:end">
           <button type="submit">Apply</button>
         </div>
@@ -173,22 +166,32 @@ $result = $stmt->get_result();
         <th>Job Ref</th>
         <th>First</th>
         <th>Last</th>
+        <th>Street Address</th>
+        <th>Suburb/Town</th>
+        <th>State</th>
+        <th>Post</th>
         <th>Email</th>
         <th>Phone</th>
+        <th>Skills</th>
+        <th>Other Skills</th>
         <th>Status</th>
-        <th>Created</th>
-        <th>Update</th>
       </tr>
     </thead>
     <tbody>
       <?php while ($row = $result->fetch_assoc()): ?>
       <tr>
         <td><?= h($row['EOInumber']) ?></td>
-        <td><?= h($row['job_ref_num']) ?></td>
-        <td><?= h($row['first_name']) ?></td>
-        <td><?= h($row['last_name']) ?></td>
+        <td><?= h($row['jobRef']) ?></td>
+        <td><?= h($row['firstName']) ?></td>
+        <td><?= h($row['lastName']) ?></td>
+        <td><?= h($row['streetAddress']) ?></td>
+        <td><?= h($row['suburbTown']) ?></td>
+        <td><?= h($row['state']) ?></td>
+        <td><?= h($row['postcode']) ?></td>
         <td><?= h($row['email']) ?></td>
         <td><?= h($row['phone']) ?></td>
+        <td><?= h($row['skills']) ?></td>
+        <td><?= h($row['otherComments']) ?></td>
         <td class="status-<?= h($row['status']) ?>">
           <form method="post" class="inline-form" action="">
             <input type="hidden" name="csrf" value="<?= h($_SESSION['csrf'] ?? '') ?>">
@@ -202,7 +205,6 @@ $result = $stmt->get_result();
             <button type="submit">Update</button>
           </form>
         </td>
-        <td><?= h($row['created_at']) ?></td>
       </tr>
       <?php endwhile; ?>
     </tbody>
