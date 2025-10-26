@@ -2,9 +2,6 @@
 session_start();
 // Include database settings
 require_once('settings.php');
-// Include common UI elements
-require_once('header.inc');
-require_once('nav.inc');
 
 // --- 1. BLOCK DIRECT ACCESS ---
 // Check if the request method is POST and if a required field is set.
@@ -14,11 +11,13 @@ if ($_SERVER["REQUEST_METHOD"] != "POST" || !isset($_POST['ref'])) {
 }
 
 // --- 2. CONNECT TO DATABASE ---
-$conn = @mysqli_connect($host, $user, $pwd, $sql_db);
-
+$conn = @mysqli_connect($host2, $user, $pwd, $sql_db, $port2);
 if (!$conn) {
-    // Show a general error, do not expose internal details like mysqli_connect_error()
-    die("<p>Database connection failure. Please try again later.</p>");
+    $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
+    if (!$conn) {
+        // Show a general error, do not expose internal details like mysqli_connect_error()
+        die("<p>Database connection failure. Please try again later.</p>");
+    }
 }
 
 // --- 3. SERVER-SIDE VALIDATION & SANITISING ---
@@ -34,8 +33,9 @@ $state = mysqli_real_escape_string($conn, trim($_POST['state']));
 $postcode = mysqli_real_escape_string($conn, trim($_POST['postcode']));
 $email = mysqli_real_escape_string($conn, trim($_POST['email']));
 $phone = mysqli_real_escape_string($conn, trim($_POST['phone']));
+
 // Handle skills array to string conversion
-$skillsArray = isset($_POST['skills']) ? $_POST['skills'] : [];
+$skillsArray = $_POST['skills'] ?? [];
 $skills = mysqli_real_escape_string($conn, implode(", ", $skillsArray));
 $otherSkills = mysqli_real_escape_string($conn, trim($_POST['otherSkills']));
 
@@ -50,15 +50,35 @@ if (!preg_match("/^[0-9]{4}$/", $postcode)) $errors[] = "Postcode must be 4 digi
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Invalid email format.";
 if (!preg_match("/^[0-9]{8,12}$/", $phone)) $errors[] = "Phone number must be 8–12 digits.";
 if (empty($skills) && empty($otherSkills)) $errors[] = "You must select at least one skill or describe other skills.";
+// empty() -> bool
 
+$query = "SELECT * FROM jobs";
+$result = mysqli_query($conn, $query); // $result: mysqli_result | bool
+
+if (!$result) {
+    die("One of the backend stuffs failed... Please try again and pray :/");
+}
+
+$job_ref_is_in = false;
+while ($row = mysqli_fetch_assoc($result)) {
+    if ($jobRef === htmlspecialchars($row['jobRef'])) {
+        $job_ref_is_in = true;
+        break;
+    }
+}
+
+if (!$job_ref_is_in) {
+    $errors[] = "Invalid Job Reference Number; Please peruse the jobs' description.";
+}
 
 // If validation fails, redirect back to apply.php
-if (count($errors) > 0) {
+if (!empty($errors)) {
     // Store errors in session to display them on apply.php
     $_SESSION['eoi_errors'] = $errors;
     // Optionally store form data to repopulate fields
     $_SESSION['form_data'] = $_POST;
     mysqli_close($conn);
+
     header("Location: apply.php");
     exit();
 }
@@ -85,6 +105,7 @@ $createTableQuery = "
     );
 ";
 
+# mysqli_query() -> bool
 if (!mysqli_query($conn, $createTableQuery)) {
     die("Error creating table: " . mysqli_error($conn));
 }
@@ -116,25 +137,27 @@ if ($success) {
 
 mysqli_stmt_close($stmt);
 mysqli_close($conn);
-?>
+
+if ($EOInumber) {
+    $_SESSION["eoi-render-info"] = '
 <main class="main_container">
-    <h2>Application Confirmation</h2>
-    <?php if ($EOInumber): ?>
-        <section class="confirmation">
-            <p>✅ **Success!** Your Expression of Interest has been successfully submitted.</p>
-            <p>Your unique **EOI Number** is: <strong class="eoi-number"><?php echo $EOInumber; ?></strong></p>
-            <p>We recommend you save this number for future reference.</p>
-            <p><a href="jobs.php" class="back-link">View other jobs</a> | <a href="index.php" class="back-link">Return to Home Page</a></p>
-        </section>
-    <?php else: ?>
-        <section class="error-message">
-            <p>❌ **Error:** Could not process your application. Please check your form submission and try again.</p>
-            <p><a href="apply.php" class="back-link">Go back to the application form</a></p>
-        </section>
-    <?php endif; ?>
-</main>
-<?php
-require_once('footer.inc');
-// Ensure no further HTML output
-exit();
+    <section class="confirmation">
+        <p>✅ **Success!** Your Expression of Interest has been successfully submitted.</p>
+        <p>Your unique **EOI Number** is: <strong class="eoi-number">' . htmlspecialchars($EOInumber) . '</strong></p>
+        <p>We recommend you save this number for future reference.</p>
+        <p><a href="home.php" class="back-link">View other jobs</a> | <a href="index.php" class="back-link">Return to Home Page</a></p>
+    </section>
+</main>';
+}
+else {
+    $_SESSION['eoi-render-info'] = '
+    <section class="error-message">
+        <p>❌ **Error:** Could not process your application. Please check your form submission and try again.</p>
+        <p><a href="apply.php" class="back-link">Go back to the application form</a></p>
+    </section>';
+}
+
+header("Location: thankyou.php");
+exit
+
 ?>
