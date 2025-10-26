@@ -429,7 +429,8 @@ caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
 /* ----------------------------
     Animations
 -----------------------------*/
-/* @keyframes are global and should not be scoped */
+
+/* @keyframes are global CSS rules and cannot be scoped with a class */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -449,7 +450,7 @@ caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
     Responsive Design
 -----------------------------*/
 
-/* The `.page-home` selector must be placed *inside* the media query, on the selector */
+/* The class is added to the selector inside the media query */
 @media (max-width: 900px) {
     .page-home .grid-3 {
         grid-template-columns: 1fr 1fr;
@@ -486,6 +487,10 @@ caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
 /* Page: About (about.html)
     Requires: <body class="page-about">
 */
+
+.page-about .card {
+  margin: 10px 0px;
+}
 
 /* Headings & text */
 .page-about h1,
@@ -582,25 +587,6 @@ caption { caption-side: top; margin-bottom: 6px; color: var(--muted); }
     font-size: 0.95rem;
     color: var(--muted);
     margin-top: 10px;
-}
-
-/* Page: Home (home.html) */
-.page-home .lead { color: var(--muted); }
-
-.page-home .hero {
-  padding: 48px 0;
-  border-bottom: 1px solid var(--border);
-  background:
-    radial-gradient(900px 300px at 100% 0%, #112235, transparent),
-    radial-gradient(1000px 400px at 10% -10%, #1a2132, transparent);
-}
-
-.page-home .hero-logo { display: block; margin-bottom: 8px; }
-.page-home .slogan { font-style: italic; color: var(--accent); }
-
-/* Page: About (about.html) */
-.page-about .card {
-  margin: 10px 0px;
 }
 
 /* Page: Jobs (jobs.html) */
