@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>CodeWave — Innovative Cloud & Web Solutions</title>
   <link rel="icon" href="images/logo.svg" type="image/svg+xml"/>
-  <link rel="stylesheet" href="styles/base.css"/>
-  <link rel="stylesheet" href="styles/nav-bar.css"/>
-  <link rel="stylesheet" href="styles/home.css"/>
+  <link rel="stylesheet" href="styles/styles.css"/>
+  <!-- <link rel="stylesheet" href="styles/home.css"/> -->
+
 
   <!-- Embedded CSS for minor inline hero gradient fix -->
   <style>
@@ -49,7 +49,7 @@
   </style>
 </head>
 
-<body>
+<body class='page-home'>
  <?php include 'header.inc'; ?>
 
   <!-- Hero Section -->
