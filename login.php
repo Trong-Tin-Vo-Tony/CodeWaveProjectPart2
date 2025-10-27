@@ -66,7 +66,7 @@ function h($s){ return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
       <div style="display:flex;gap:.6rem;margin-top:.8rem;">
         <button type="submit">Sign in</button>
-        <a class="btn secondary" href="home.php" style="padding:.65rem .9rem;border-radius:10px;border:1px solid var(--border);text-decoration:none">Back</a>
+        <a class="btn secondary" href="index.php" style="padding:.65rem .9rem;border-radius:10px;border:1px solid var(--border);text-decoration:none">Back</a>
       </div>
     </form>
   </div>

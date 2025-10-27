@@ -107,19 +107,19 @@
               <h2>Contributions & Quotes</h2>
               <dl>
                 <dt>Sajid Hasan</dt>
-                <dd>Team Leader & Application Page Developer - "Ship small, learn fast." (Fav. language: <span lang="en">TypeScript</span>)</dd>
+                <dd>Team Leader, Application Page Developer, & EOI Processor - "Ship small, learn fast." (Fav. language: <span lang="en">TypeScript</span>)</dd>
                 <br>
                 <dt>Kammantrige Siumi Sathsarani</dt>
                 <dd>Home & Group Details Manager - "Design first, code clean." (Fav. language: <span lang="en">HTML</span> - Sinhala: <span lang="en"> </span>)</dd>
                 <br>
                 <dt>Sandeep Y. D. S. Anthonydura</dt>
-                <dd>Job Apps & Position Descriptions - "Clarity beats cleverness." (First language: <span lang="en"> Sinhala </span>)</dd>
+                <dd>Job Apps, Position Descriptions - "Clarity beats cleverness." (First language: <span lang="en"> Sinhala </span>)</dd>
                 <br>
                 <dt>Antonio Prince</dt>
-                <dd>Enhancements & Styling — “Details make the experience.” (Fav. language: <span lang="en">CSS</span>)</dd>
+                <dd>Enhancements, Styling, & Admin Page Manager — “Details make the experience.” (Fav. language: <span lang="en">CSS</span>)</dd>
                 <br>
                 <dt>Trong Tin Vo</dt>
-                <dd>Styling & Quality Insurance — “It'll work if you bang your head at it enough." (Fav. language: 
+                <dd>Styling, Quality, & Consistency Insurance — “It'll work if you bang your head at it enough." (Fav. language: 
                   <span lang="en" style="color: orange; font-weight: bold">Python</span>)
                 </dd>
               </dl>

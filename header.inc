@@ -5,7 +5,7 @@
     </a>
     <nav aria-label="Main">
     <ul class="nav">
-        <li><a class="active" href="home.php">Home</a></li>
+        <li><a class="active" href="index.php">Home</a></li>
         <li><a href="jobs.php">Jobs</a></li>
         <li><a href="about.php">About</a></li>
         <li><a href="login.php">Manager Login</a></li>

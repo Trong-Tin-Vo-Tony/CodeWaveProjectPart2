@@ -52,13 +52,33 @@ if (!preg_match("/^[0-9]{8,12}$/", $phone)) $errors[] = "Phone number must be 8�
 if (empty($skills) && empty($otherSkills)) $errors[] = "You must select at least one skill or describe other skills.";
 // empty() -> bool
 
+$query = "SELECT * FROM jobs";
+$result = mysqli_query($conn, $query); // $result: mysqli_result | bool
+
+if (!$result) {
+    die("One of the backend stuffs failed... Please try again and pray :/");
+}
+
+$job_ref_is_in = false;
+while ($row = mysqli_fetch_assoc($result)) {
+    if ($jobRef === htmlspecialchars($row['jobRef'])) {
+        $job_ref_is_in = true;
+        break;
+    }
+}
+
+if (!$job_ref_is_in) {
+    $errors[] = "Invalid Job Reference Number; Please peruse the jobs' description.";
+}
+
 // If validation fails, redirect back to apply.php
-if (count($errors) > 0) {
+if (!empty($errors)) {
     // Store errors in session to display them on apply.php
     $_SESSION['eoi_errors'] = $errors;
     // Optionally store form data to repopulate fields
     $_SESSION['form_data'] = $_POST;
     mysqli_close($conn);
+
     header("Location: apply.php");
     exit();
 }
@@ -122,10 +142,10 @@ if ($EOInumber) {
     $_SESSION["eoi-render-info"] = '
 <main class="main_container">
     <section class="confirmation">
-        <p>✅ **Success!** Your Expression of Interest has been successfully submitted.</p>
-        <p>Your unique **EOI Number** is: <strong class="eoi-number">' . htmlspecialchars($EOInumber) . '</strong></p>
+        <p>✅ Success! Your Expression of Interest has been successfully submitted.</p>
+        <p>Your unique EOI Number is: <strong class="eoi-number">' . htmlspecialchars($EOInumber) . '</strong></p>
         <p>We recommend you save this number for future reference.</p>
-        <p><a href="jobs.php" class="back-link">View other jobs</a> | <a href="index.php" class="back-link">Return to Home Page</a></p>
+        <p><a href="Jobs.php" class="back-link">View other jobs</a> | <a href="index.php" class="back-link">Return to Home Page</a></p>
     </section>
 </main>';
 }
