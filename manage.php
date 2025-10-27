@@ -1,125 +1,213 @@
 <?php
-require_once 'auth.php';
+// manage.php — HR Manager dashboard (Requirement 6)
+require_once 'auth.php';       // blocks access if not logged in
 require_once 'settings.php';
+
 $conn = @mysqli_connect($host, $user, $pwd, $sql_db);
-if (!$conn) die("Database connection failed.");
+if (!$conn) {
+  die('Database connection failed'); 
+}
 
-function h($s){ return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
 
-// Handle updates or deletions
-$message = "";
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+function h($s){ return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+
+// ---------- Sorting (whitelist) ----------
+$validSort = ['EOInumber','jobRef','firstName','lastName', 'streetAddress', 'suburbTown', 'state', 'postcode', 'email','phone', 'skills', 'otherComments', 'status'];
+$sort = $_GET['sort'] ?? 'EOInumber';
+$order  = $_GET['order']  ?? 'DESC';
+$sort = in_array($sort, $validSort, true) ? $sort : 'EOInumber';
+$order  = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
+
+// ---------- POST actions with CSRF ----------
+$flash = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (!hash_equals($_SESSION['csrf'] ?? '', $_POST['csrf'] ?? '')) {
+    http_response_code(403);
+    die('Invalid CSRF token');
+  }
+
   // Update status
-  if (isset($_POST["update_status"])) {
-    $id = intval($_POST["job_ref_num"]);
-    $status = $_POST["status"];
-    $stmt = $conn->prepare("UPDATE eoi SET status=? WHERE job_ref_num=?");
-    $stmt->bind_param("si", $status, $id);
-    $stmt->execute();
-    $message = "Status updated for job_ref_num $id.";
+  if (($_POST['action'] ?? '') === 'update_status') {
+    $eoi = (int)($_POST['EOInumber'] ?? 0);
+    $status  = $_POST['status'] ?? '';
+    $ok  = ['New','Current','Final'];
+    if ($eoi > 0 && in_array($status, $ok, true)) {
+      $stmt = $conn->prepare("UPDATE eoi SET status=? WHERE EOInumber=?");
+      $stmt->bind_param('si', $status, $eoi);
+      $stmt->execute();
+      $flash = $stmt->affected_rows >= 0 ? "EOI #$eoi status updated to $status." : "No change made.";
+    } else {
+      $flash = 'Invalid status update request.';
+    }
   }
-  // Delete by job_ref
-  if (isset($_POST["delete_jobref"])) {
-    $jobref = intval($_POST["job_ref_num"]);
-    $stmt = $conn->prepare("DELETE FROM eoi WHERE job_ref_num=?");
-    $stmt->bind_param("i", $jobref);
-    $stmt->execute();
-    $message = "All EOIs with Job Ref $jobref deleted.";
+
+  if (($_POST['action'] ?? '') === 'delete_by_jobref') {
+    $jobref = (int)($_POST['job_ref_num'] ?? 0);
+    if ($jobref > 0) {
+      $stmt = $conn->prepare("DELETE FROM eoi WHERE jobRef = ?");
+      $stmt->bind_param('i', $jobref);
+      $stmt->execute();
+      $flash = "Deleted {$stmt->affected_rows} EOI record(s) for Job Ref ".h($jobref).".";
+    } else {
+      $flash = 'Provide a valid numeric job reference.';
+    }
   }
+
+  // PRG pattern
+  $qs = $_GET;
+  header('Location: manage.php?'.http_build_query($qs));
+  exit;
 }
 
-// Filtering
-$where = "";
-if (!empty($_GET["first_name"])) {
-  $fname = "%" . $_GET["first_name"] . "%";
-  $where = "WHERE first_name LIKE ?";
-}
-elseif (!empty($_GET["last_name"])) {
-  $lname = "%" . $_GET["last_name"] . "%";
-  $where = "WHERE last_name LIKE ?";
-}
-elseif (!empty($_GET["job_ref_num"])) {
-  $jobref = intval($_GET["job_ref_num"]);
-  $where = "WHERE job_ref_num = ?";
-}
+$where  = [];
+$types  = '';
+$params = [];
 
-// Sorting
-$sort = $_GET["sort"] ?? "job_ref_num";
-$order = ($_GET["order"] ?? "ASC") === "DESC" ? "DESC" : "ASC";
+// $jobSearch = trim($_GET['job_ref_num'] ?? '');
+// $fnSearch  = trim($_GET['first_name'] ?? '');
+// $lnSearch  = trim($_GET['last_name'] ?? '');
 
-// Query builder
-$sql = "SELECT job_ref_num, first_name, last_name, dob, gender, st_address, suburb_town, state, postcode, email, phone, status FROM eoi";
-$sql .= " $where ORDER BY $sort $order";
+// if ($jobSearch !== '') {
+//   $where[]  = "job_ref_num = ?";
+//   $types   .= 'i';
+//   $params[] = (int)$jobSearch;
+// }
+// if ($fnSearch !== '') {
+//   $where[]  = "first_name LIKE CONCAT('%', ?, '%')";
+//   $types   .= 's';
+//   $params[] = $fnSearch;
+// }
+// if ($lnSearch !== '') {
+//   $where[]  = "last_name LIKE CONCAT('%', ?, '%')";
+//   $types   .= 's';
+//   $params[] = $lnSearch;
+// }
+
+$sql = "SELECT EOInumber,jobRef,firstName,lastName, streetAddress, suburbTown, state, postcode, email, phone, skills, otherComments, status FROM eoi";
+// if ($where) $sql .= " WHERE ".implode(' AND ', $where);
+$sql .= " ORDER BY $sort $order";
 
 $stmt = $conn->prepare($sql);
-
-if (isset($fname)) $stmt->bind_param("s", $fname);
-elseif (isset($lname)) $stmt->bind_param("s", $lname);
-elseif (isset($jobref)) $stmt->bind_param("i", $jobref);
-
+if ($types !== '') $stmt->bind_param($types, ...$params);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
-
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
   <title>Manage EOIs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles/styles.css">
+  <link rel="stylesheet" href="styles/admin.css">
 </head>
 <body>
-<h1>Manage EOIs</h1>
-<p style="color:green;"><?php echo $message; ?></p>
 
-<!-- Search form -->
-<form method="get">
-  <input type="text" name="job_ref_num" placeholder="Job Ref">
-  <input type="text" name="first_name" placeholder="First Name">
-  <input type="text" name="last_name" placeholder="Last Name">
-  <select name="sort">
-    <option value="job_ref_num">Job Ref</option>
-    <option value="first_name">First Name</option>
-    <option value="last_name">Last Name</option>
-  </select>
-  <select name="order">
-    <option value="ASC">ASC</option>
-    <option value="DESC">DESC</option>
-  </select>
-  <button type="submit">Search / Sort</button>
-</form>
+<?php include 'header.inc'; ?>
 
-<!-- Delete by job_ref -->
-<form method="post" style="margin-top:15px;">
-  <input type="number" name="job_ref_num" placeholder="Enter Job Ref to Delete" required>
-  <button type="submit" name="delete_jobref">Delete by Job Ref</button>
-</form>
+<main class="container">
+  <header class="manage">
+    <h1>HR Manager — EOI Management</h1>
+    <div class="right">
+      Logged in as <span class="badge"><?= h($_SESSION['username'] ?? 'Manager') ?></span>
+      · <a href="logout.php">Logout</a>
+    </div>
+  </header>
 
-<!-- Table of EOIs -->
-<table border="1" cellpadding="6" cellspacing="0" style="margin-top:20px;">
-  <tr>
-    <th>Job Ref</th><th>First</th><th>Last</th><th>Email</th><th>Phone</th><th>Status</th><th>Update</th>
-  </tr>
-  <?php while ($row = $result->fetch_assoc()): ?>
-  <tr>
-    <td><?php echo h($row["job_ref_num"]); ?></td>
-    <td><?php echo h($row["first_name"]); ?></td>
-    <td><?php echo h($row["last_name"]); ?></td>
-    <td><?php echo h($row["email"]); ?></td>
-    <td><?php echo h($row["phone"]); ?></td>
-    <td>
-      <form method="post">
-        <input type="hidden" name="job_ref_num" value="<?php echo h($row["job_ref_num"]); ?>">
-        <select name="status">
-          <option value="New" <?php if($row["status"]=="New") echo "selected"; ?>>New</option>
-          <option value="Current" <?php if($row["status"]=="Current") echo "selected"; ?>>Current</option>
-          <option value="Final" <?php if($row["status"]=="Final") echo "selected"; ?>>Final</option>
-        </select>
-        <button type="submit" name="update_status">Update</button>
-      </form>
-    </td>
-  </tr>
-  <?php endwhile; ?>
-</table>
+  <?php if ($flash): ?><div class="flash"><?= h($flash) ?></div><?php endif; ?>
 
-<a href="logout.php">Logout</a>
+  <form class="topbar" method="get" action="">
+    <fieldset>
+      <legend>Sort</legend>
+          <select name="sort">
+            <?php foreach ($validSort as $f): ?>
+              <option value="<?= $f ?>" <?= $sort===$f ? 'selected':'' ?>><?= $f ?></option>
+            <?php endforeach; ?>
+          </select>
+          <select name="order">
+            <option value="ASC"  <?= $order==='ASC'?'selected':'' ?>>ASC</option>
+            <option value="DESC" <?= $order==='DESC'?'selected':'' ?>>DESC</option>
+          </select>
+        </div>
+        <br/>
+        <br/>
+        <div style="align-self:end">
+          <button type="submit">Apply</button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <form class="topbar" method="post" action=""
+        onsubmit="return confirm('Delete ALL EOIs for this Job Reference? This cannot be undone.');">
+    <fieldset class="danger">
+      <legend>Bulk Delete by Job Reference</legend>
+      <input type="hidden" name="csrf" value="<?= h($_SESSION['csrf'] ?? '') ?>">
+      <input type="hidden" name="action" value="delete_by_jobref">
+      <div class="controls">
+        <div>
+          <label>Job Reference</label>
+          <input type="number" name="job_ref_num" required>
+        </div>
+        <div style="align-self:end">
+          <button type="submit">Delete EOIs</button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>EOI #</th>
+        <th>Job Ref</th>
+        <th>First</th>
+        <th>Last</th>
+        <th>Street Address</th>
+        <th>Suburb/Town</th>
+        <th>State</th>
+        <th>Post</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Skills</th>
+        <th>Other Skills</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php while ($row = $result->fetch_assoc()): ?>
+      <tr>
+        <td><?= h($row['EOInumber']) ?></td>
+        <td><?= h($row['jobRef']) ?></td>
+        <td><?= h($row['firstName']) ?></td>
+        <td><?= h($row['lastName']) ?></td>
+        <td><?= h($row['streetAddress']) ?></td>
+        <td><?= h($row['suburbTown']) ?></td>
+        <td><?= h($row['state']) ?></td>
+        <td><?= h($row['postcode']) ?></td>
+        <td><?= h($row['email']) ?></td>
+        <td><?= h($row['phone']) ?></td>
+        <td><?= h($row['skills']) ?></td>
+        <td><?= h($row['otherComments']) ?></td>
+        <td class="status-<?= h($row['status']) ?>">
+          <form method="post" class="inline-form" action="">
+            <input type="hidden" name="csrf" value="<?= h($_SESSION['csrf'] ?? '') ?>">
+            <input type="hidden" name="action" value="update_status">
+            <input type="hidden" name="EOInumber" value="<?= h($row['EOInumber']) ?>">
+            <select name="status">
+              <?php foreach (['New','Current','Final'] as $s): ?>
+                <option value="<?= $s ?>" <?= $row['status']===$s?'selected':'' ?>><?= $s ?></option>
+              <?php endforeach; ?>
+            </select>
+            <button type="submit">Update</button>
+          </form>
+        </td>
+      </tr>
+      <?php endwhile; ?>
+    </tbody>
+  </table>
+</main>
+
+<?php if (file_exists('footer.inc')) include 'footer.inc'; ?>
 </body>
 </html>

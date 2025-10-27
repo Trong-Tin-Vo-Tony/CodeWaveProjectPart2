@@ -1,12 +1,13 @@
 <?php
 // connect to database
 require_once "settings.php"; 
-$conn = mysqli_connect($host, $user, $pwd, $sql_db);
 
-// if connection fails
+
+$conn = mysqli_connect($host, $user, $pwd, $sql_db);
 if (!$conn) {
   die("<p>Database connection failed: " . mysqli_connect_error() . "</p>");
 }
+
 
 // get all jobs from table
 $query = "SELECT * FROM jobs";
@@ -18,30 +19,30 @@ $result = mysqli_query($conn, $query);
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="images/logo.svg" type="image/svg+xml" />
-
-  <link rel="stylesheet" href="styles/base.css" />
-  <link rel="stylesheet" href="styles/nav-bar.css" />
-  <link rel="stylesheet" href="styles/Jobs.css" />
+  <link rel="stylesheet" href="styles/styles.css" />
 
   <title>CodeWave Jobs</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    img { max-width: 100%; height: auto; }
+    a { color: var(--brand); }
+    h1, h2, h3 { line-height: 1.2; margin: 0 0 12px; }
+  </style>
 </head>
-<body>
+<body class="page-jobs">
 
   <!-- HEADER -->
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="index.php" aria-label="CodeWave home">
-        <img src="images/logo.svg" alt="CodeWave logo" id="nav-bar-logo" height="32" />
-      </a>
-      <nav aria-label="Main">
-        <ul class="nav">
-          <li><a href="home.php">Home</a></li>
-          <li><a class="active" href="jobs.php">Jobs</a></li>
-          <li><a href="about.php">About</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <?php include 'header.inc';?>
 
   <img src="images/cyber-security.png" alt="Cyber security banner" class="image" loading="lazy" />
 
@@ -102,11 +103,8 @@ $result = mysqli_query($conn, $query);
     <a href="apply.php" class="apply-btn">Apply Now</a>
   </div>
 
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <p>&copy; CodeWave Pty Ltd — COS10026</p>
-    </div>
-  </footer>
+  <?php include 'footer.inc';?>
+
 
 </body>
 </html>
