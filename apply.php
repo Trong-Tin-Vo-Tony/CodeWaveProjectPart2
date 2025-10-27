@@ -44,14 +44,14 @@ function selected($field, $value, $formData) {
   <title>Apply for a Job</title>
   <link rel="icon" href="images/logo.svg" type="image/svg+xml" />
 
-  <link rel="stylesheet" href="styles/styles.css"/>
-  <!-- <link rel="stylesheet" href="styles/apply.css"/> -->
-  <!-- <link rel="stylesheet" href="styles/styles.css"/> -->
-
+  <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/nav-bar.css" />
+  <link rel="stylesheet" href="styles/apply.css" />
 </head>
 
-<body class="page-apply">
+<body>
 <?php require_once('header.inc'); ?>
+<?php require_once('nav.inc'); ?>
 
 <main class="main_container">
     <header>
@@ -145,9 +145,6 @@ function selected($field, $value, $formData) {
 
       <button type="submit" class="apply-btn">Submit Application</button>
     </form>
-
-
-</main>
 </main>
 
 <?php require_once('footer.inc'); ?>
